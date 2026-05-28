@@ -1043,7 +1043,14 @@
       display: flex;
       align-items: baseline;
       gap: 6px;
-      margin: 12px 0 16px
+      margin: 12px 0 6px
+    }
+
+    .card-original-price {
+      font-size: 13px;
+      color: #777;
+      text-decoration: line-through;
+      margin-bottom: 2px
     }
 
     .card-price {
@@ -1055,6 +1062,37 @@
     .card-price-period {
       font-size: 14px;
       color: #777
+    }
+
+    .discount-badge {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(198, 255, 51, .12);
+      color: var(--accent);
+      border: 1px solid rgba(198, 255, 51, .24);
+      font-size: 11px;
+      font-weight: 700;
+      margin-bottom: 14px
+    }
+
+    .earlybird-note {
+      max-width: 960px;
+      margin: -16px auto 28px;
+      padding: 14px 18px;
+      border: 1px solid rgba(198, 255, 51, .18);
+      background: rgba(198, 255, 51, .06);
+      color: #ddd;
+      border-radius: 12px;
+      font-size: 14px;
+      line-height: 1.55;
+      text-align: center
+    }
+
+    .earlybird-note strong {
+      color: var(--accent)
     }
 
     .card-features {
@@ -1758,68 +1796,80 @@
         <div class="feature-pill"><span class="icon">📊</span> 실시간 소통 및 피드백</div>
       </div>
 
+      <div class="earlybird-note">
+        <strong>얼리버드 기간: 6/1~6/6</strong> · 기본 4주반, 하이록스 스테이션, 대회준비반은 30% 할인 / 러닝 클래스는 20% 할인 적용
+      </div>
+
       <div class="pricing-grid">
         <div class="price-card">
-          <div class="card-name">HYROX 4-WEEK FOUNDATION</div>
+          <div class="card-name">기본 4주반</div>
+          <div class="card-original-price">정가 ₩150,000</div>
           <div class="card-price-row">
-            <span class="card-price">₩150,000</span>
-            <span class="card-price-period">/ 월</span>
+            <span class="card-price">₩105,000</span>
+            <span class="card-price-period">/ 1개월</span>
           </div>
-          <p class="card-desc-sm">하이록스를 처음 시작하는 사람 혹은 레이스 경험이 없으신 분들을 위한 4주 프로그램</p>
+          <div class="discount-badge">얼리버드 30%</div>
+          <p class="card-desc-sm">러닝 + 스테이션 통합 기본반. 하이록스를 처음 시작하거나 레이스 경험이 적은 분을 위한 4주 프로그램입니다.</p>
           <ul class="card-features">
-            <li><span class="ck">✓</span> 주 4회 맞춤 WOD 제공</li>
-            <li><span class="ck">✓</span> 기초 폼 &amp; 페이싱 가이드</li>
-            <li><span class="ck">✓</span> 전용 커뮤니티 채널 입장</li>
-            <li><span class="ck">✓</span> 주간 훈련 리포트</li>
+            <li><span class="ck">✓</span> 4주 클래스</li>
+            <li><span class="ck">✓</span> 러닝 + 스테이션 통합 구성</li>
+            <li><span class="ck">✓</span> 4주 마지막 대면 미팅 및 레슨 1회</li>
+            <li><span class="ck">✓</span> 개인 수준에 맞춘 기본 훈련 방향 제공</li>
           </ul>
           <a href="./order.html?program=06a42964-2aa4-4287-a724-32fb8526e2df" class="btn-primary">지원하기 →</a>
         </div>
 
         <div class="price-card featured">
           <div class="card-badge">🔥 추천</div>
-          <div class="card-name">ROAD TO PODIUM<br />BREAK THE RECORD</div>
+          <div class="card-name">대회준비반</div>
+          <div class="card-original-price">정가 ₩300,000</div>
           <div class="card-price-row">
-            <span class="card-price">₩300,000</span>
-            <span class="card-price-period">/ 월</span>
+            <span class="card-price">₩210,000</span>
+            <span class="card-price-period">/ 1개월</span>
           </div>
-          <p class="card-desc-sm">레이스 경험은 있으나 구체적인 목표기록 달성, 포디움을 목표로 하는 선수들을 위한 프로그램</p>
+          <div class="discount-badge">얼리버드 30%</div>
+          <p class="card-desc-sm">구체적인 목표 기록 달성, 포디움, 대회 완주 전략까지 준비하는 러닝 + 스테이션 통합 클래스입니다.</p>
           <ul class="card-features">
-            <li><span class="ck">✓</span> 선수 스타일 맞춤 피드백</li>
-            <li><span class="ck">✓</span> 주 5회 고강도 WOD + 러닝</li>
-            <li><span class="ck">✓</span> 영상 자세 분석 피드백</li>
-            <li><span class="ck">✓</span> 대회 페이싱 전략 1:1 컨설팅</li>
+            <li><span class="ck">✓</span> 4주 클래스</li>
+            <li><span class="ck">✓</span> 일주일에 4회 프로그램 제공</li>
+            <li><span class="ck">✓</span> 러닝 + 스테이션 통합 훈련</li>
+            <li><span class="ck">✓</span> 2주 간격 대면 훈련 및 미팅, 총 2회 진행</li>
           </ul>
           <a href="./order.html?program=0d925d9f-bdb1-4e34-ae70-5609faa20983" class="btn-primary">지원하기 →</a>
         </div>
 
         <div class="price-card">
-          <div class="card-name">HYROX Running<br />THE PACE</div>
+          <div class="card-name">러닝 클래스</div>
+          <div class="card-original-price">정가 ₩200,000</div>
           <div class="card-price-row">
-            <span class="card-price">₩200,000</span>
-            <span class="card-price-period">/ 월</span>
+            <span class="card-price">₩160,000</span>
+            <span class="card-price-period">/ 1개월</span>
           </div>
-          <p class="card-desc-sm">하이록스를 잘하고 싶은데 러닝 페이스가 떨어지고 기록이 따라오지 않는다면? 전선수가 가장 강력 추천하는 클래스</p>
+          <div class="discount-badge">얼리버드 20%</div>
+          <p class="card-desc-sm">하이록스에서 러닝 페이스가 무너지거나, 러닝 구간 기록을 집중적으로 끌어올리고 싶은 분을 위한 클래스입니다.</p>
           <ul class="card-features">
-            <li><span class="ck">✓</span> HYROX 특화 러닝 인터벌</li>
-            <li><span class="ck">✓</span> 스테이션 연계 전환 러닝 훈련</li>
-            <li><span class="ck">✓</span> 개인별 페이스존 설정</li>
-            <li><span class="ck">✓</span> 구간별 페이싱 전략 코칭</li>
+            <li><span class="ck">✓</span> 4주 클래스</li>
+            <li><span class="ck">✓</span> 일주일에 3회 또는 4회</li>
+            <li><span class="ck">✓</span> 러닝 수준과 강도에 따른 프로그램 제공</li>
+            <li><span class="ck">✓</span> 개인별 페이스와 목표에 맞춘 러닝 보완</li>
           </ul>
           <a href="./order.html?program=8f81d9f1-8559-4fd8-bbe9-c49779770461" class="btn-primary">지원하기 →</a>
         </div>
 
         <div class="price-card">
-          <div class="card-name">HYROX Station<br />THE POWER</div>
+          <div class="card-name">하이록스 스테이션</div>
+          <div class="card-original-price">정가 ₩100,000</div>
           <div class="card-price-row">
-            <span class="card-price">₩200,000</span>
-            <span class="card-price-period">/ 월</span>
+            <span class="card-price">₩70,000</span>
+            <span class="card-price-period">/ 2주</span>
           </div>
-          <p class="card-desc-sm">러너 출신, Sub-3 러너 — 러닝은 자신 있지만 스테이션에 부담이 있다면? 스테이션별 목적에 맞는 훈련으로 보완</p>
+          <div class="discount-badge">얼리버드 30%</div>
+          <p class="card-desc-sm">러닝은 자신 있지만 스테이션에 부담이 있거나, 종목별 목적에 맞는 보완 훈련이 필요한 분을 위한 2주 클래스입니다.</p>
           <ul class="card-features">
+            <li><span class="ck">✓</span> 2주 클래스</li>
+            <li><span class="ck">✓</span> 일주일에 3회 프로그램 제공</li>
             <li><span class="ck">✓</span> 스테이션별 목적 훈련 프로그래밍</li>
-            <li><span class="ck">✓</span> Sled / Burpee / Wall Ball 특화</li>
-            <li><span class="ck">✓</span> 전환 동작(Transition) 최적화</li>
-            <li><span class="ck">✓</span> 근지구력 &amp; 파워 밸런스 코칭</li>
+            <li><span class="ck">✓</span> 부족한 구간을 보완하는 근지구력 훈련</li>
           </ul>
           <a href="./order.html?program=c881344f-267c-4aa4-ad49-008e4275ec1f" class="btn-primary">지원하기 →</a>
         </div>
