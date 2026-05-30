@@ -1142,6 +1142,78 @@
       line-height: 1.6
     }
 
+    /* ===== COLLABORATION ===== */
+    .collaboration {
+      background: #0d0d0d;
+      border-top: 1px solid rgba(255, 255, 255, .05);
+      border-bottom: 1px solid rgba(255, 255, 255, .05)
+    }
+
+    .partner-section-inner {
+      max-width: 760px;
+      margin: 0 auto;
+      text-align: center
+    }
+
+    .partner-logo-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 28px
+    }
+
+    .partner-logo-box img {
+      width: 100%;
+      max-width: 420px;
+      height: auto
+    }
+
+    .partner-title {
+      font-size: clamp(28px, 4vw, 44px);
+      line-height: 1.08;
+      font-weight: 900;
+      letter-spacing: 0;
+      margin-bottom: 18px
+    }
+
+    .partner-title span {
+      color: var(--accent)
+    }
+
+    .partner-desc {
+      max-width: 650px;
+      margin: 0 auto 26px;
+      color: #cfcfcf;
+      font-size: 15px;
+      line-height: 1.75
+    }
+
+    .partner-tag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 5px 12px;
+      border-radius: 999px;
+      background: rgba(198, 255, 51, .1);
+      border: 1px solid rgba(198, 255, 51, .22);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 18px
+    }
+
+    .collaboration .btn-outline {
+      border-color: rgba(255, 255, 255, .18)
+    }
+
+    @media(max-width:760px) {
+      .partner-logo-box img {
+        max-width: 320px
+      }
+    }
+
     /* ===== SOCIAL PROOF ===== */
     .proof {
       background: #080808;
@@ -1858,15 +1930,15 @@
 
         <div class="price-card">
           <div class="card-name">하이록스 스테이션</div>
-          <div class="card-original-price">정가 ₩100,000</div>
+          <div class="card-original-price">정가 ₩200,000</div>
           <div class="card-price-row">
-            <span class="card-price">₩70,000</span>
-            <span class="card-price-period">/ 2주</span>
+            <span class="card-price">₩140,000</span>
+            <span class="card-price-period">/ 1개월</span>
           </div>
           <div class="discount-badge">얼리버드 30%</div>
-          <p class="card-desc-sm">러닝은 자신 있지만 스테이션에 부담이 있거나, 종목별 목적에 맞는 보완 훈련이 필요한 분을 위한 2주 클래스입니다.</p>
+          <p class="card-desc-sm">러닝은 자신 있지만 스테이션에 부담이 있거나, 종목별 목적에 맞는 보완 훈련이 필요한 분을 위한 4주 클래스입니다.</p>
           <ul class="card-features">
-            <li><span class="ck">✓</span> 2주 클래스</li>
+            <li><span class="ck">✓</span> 4주 클래스</li>
             <li><span class="ck">✓</span> 일주일에 3회 프로그램 제공</li>
             <li><span class="ck">✓</span> 스테이션별 목적 훈련 프로그래밍</li>
             <li><span class="ck">✓</span> 부족한 구간을 보완하는 근지구력 훈련</li>
@@ -1877,7 +1949,25 @@
     </div>
   </section>
 
-  <!-- ============ SECTION 5: SOCIAL PROOF ============ -->
+  <!-- ============ SECTION 5: COLLABORATION ============ -->
+  <section class="collaboration" id="collaboration">
+    <div class="container">
+      <div class="partner-section-inner">
+        <div class="partner-logo-box">
+          <img src="medalist-logo.png" alt="MEDALIST KR 로고" />
+        </div>
+        <span class="section-label">Collaboration</span>
+        <div class="partner-tag">Official Ambassador</div>
+        <h2 class="partner-title">AMOR LAB <span>×</span><br />MEDALIST KR</h2>
+        <p class="partner-desc">
+          전준현 코치는 MEDALIST KR 앰버서더로 함께합니다. 하이록스 훈련 후 무너진 컨디션을 다시 끌어올리는 무카페인 회복 에너지 루틴을 AMOR LAB의 훈련 철학과 함께 소개합니다.
+        </p>
+        <a class="btn-outline" href="https://themedalist.co.kr/" target="_blank" rel="noopener noreferrer">MEDALIST KR 방문하기 →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SECTION 6: SOCIAL PROOF ============ -->
   <section class="proof" id="proof">
     <div class="container">
       <div class="proof-header">
@@ -1983,7 +2073,7 @@
     </div>
   </section>
 
-  <!-- ============ SECTION 6: FAQ ============ -->
+  <!-- ============ SECTION 7: FAQ ============ -->
   <section class="faq" id="faq">
     <div class="container">
       <div class="faq-header">
@@ -2026,7 +2116,7 @@
     </div>
   </section>
 
-  <!-- ============ SECTION 7: FOOTER / FINAL CTA ============ -->
+  <!-- ============ SECTION 8: FOOTER / FINAL CTA ============ -->
   <section class="footer-cta" id="footer">
     <div class="container">
       <span class="section-label">Final CTA</span>
