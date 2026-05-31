@@ -92,6 +92,12 @@
       color: var(--accent)
     }
 
+    .top-links {
+      display: flex;
+      align-items: center;
+      gap: 18px
+    }
+
     main {
       padding: 56px 0 84px
     }
@@ -503,7 +509,10 @@
   <header class="topbar">
     <div class="container topbar-inner">
       <a class="brand" href="./index.html">AMOR LAB</a>
-      <a class="back-link" href="./index.html#pricing">프로그램 다시 보기</a>
+      <nav class="top-links" aria-label="상단 이동">
+        <a class="back-link" href="./lookup.html">주문 확인</a>
+        <a class="back-link" href="./index.html#pricing">프로그램 다시 보기</a>
+      </nav>
     </div>
   </header>
 
