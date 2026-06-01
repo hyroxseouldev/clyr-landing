@@ -1,0 +1,367 @@
+{
+  "tenant": {
+    "id": "8e4f2364-ddd7-4e65-8238-6951d67b4c42",
+    "slug": "amor",
+    "name": "amor_jh",
+    "created_at": "2026-04-30 03:31:18.345428+00",
+    "updated_at": "2026-04-30 03:31:18.345428+00"
+  },
+  "branding": {
+    "team_name": "",
+    "logo_url": "",
+    "slogan": "",
+    "description": "",
+    "coach_name": "",
+    "coach_instagram": "",
+    "coach_career": [],
+    "coach_image_url": "",
+    "created_at": "2026-04-30 03:31:18.379978+00",
+    "updated_at": "2026-04-30 05:32:55.712924+00"
+  },
+  "programs": [
+    {
+      "id": "06a42964-2aa4-4287-a724-32fb8526e2df",
+      "tenant_id": "8e4f2364-ddd7-4e65-8238-6951d67b4c42",
+      "title": "HYROX 4-WEEK FOUNDATION",
+      "team_name": "HYROX 4-WEEK FOUNDATION",
+      "slogan": "HYROX 4-WEEK FOUNDATION",
+      "description": "하이록스를 처음 시작하는 사람 혹은 레이스 경험이 없으신 분들을 위한 4주 프로그램",
+      "thumbnail_url": "https://sburksnwmywzytpctjws.supabase.co/storage/v1/object/public/content-media/users/c05a1ac7-a8c9-45a4-b074-d35d7955b5bf/program-thumbnail/2026/05/1778500991444-d592c490-3e4d-4564-a6ce-9ab55dc5d611.webp",
+      "difficulty": "beginner",
+      "daily_workout_minutes": 60,
+      "days_per_week": 5,
+      "start_date": "2026-05-17",
+      "end_date": "2027-12-11",
+      "display_order": 0,
+      "mobile_visibility": "public",
+      "coach_name": "전준현",
+      "coach_instagram": "amor_jh_special",
+      "coach_career": [],
+      "created_at": "2026-05-11 12:03:35.206319+00",
+      "updated_at": "2026-05-13 04:57:24.140458+00",
+      "coaches": [
+        {
+          "coach_profile_id": "69f1c130-0665-4487-989f-1ec850fc094f",
+          "display_name": "전준현",
+          "instagram": "amor_jh.special",
+          "introduction": "소개문 입니다.",
+          "career": [
+            "경력 입니다."
+          ],
+          "image_url": "https://sburksnwmywzytpctjws.supabase.co/storage/v1/object/public/content-media/users/c05a1ac7-a8c9-45a4-b074-d35d7955b5bf/coach-profile/2026/05/1778500654559-4da1705b-913f-4592-a823-4253195cec07.webp",
+          "additional_image_urls": [
+            "https://sburksnwmywzytpctjws.supabase.co/storage/v1/object/public/content-media/users/c05a1ac7-a8c9-45a4-b074-d35d7955b5bf/coach-profile/2026/05/1779512881828-7b127906-6d49-4641-82f8-cab9a28a5455.webp",
+            "https://sburksnwmywzytpctjws.supabase.co/storage/v1/object/public/content-media/users/c05a1ac7-a8c9-45a4-b074-d35d7955b5bf/coach-profile/2026/05/1779512887611-4bb760bf-e0f6-440e-9799-f004ffe2635b.webp",
+            "https://sburksnwmywzytpctjws.supabase.co/storage/v1/object/public/content-media/users/c05a1ac7-a8c9-45a4-b074-d35d7955b5bf/coach-profile/2026/05/1779512892867-5c830d27-33cd-454d-b362-84dc7f45f5e1.webp",
+            "https://sburksnwmywzytpctjws.supabase.co/storage/v1/object/public/content-media/users/c05a1ac7-a8c9-45a4-b074-d35d7955b5bf/coach-profile/2026/05/1779512897554-27f4940a-9df5-413f-a7dc-8bcfd93d75f4.webp",
+            "https://sburksnwmywzytpctjws.supabase.co/storage/v1/object/public/content-media/users/c05a1ac7-a8c9-45a4-b074-d35d7955b5bf/coach-profile/2026/05/1779512905241-30c884b6-f4c9-4de7-aee4-0b03e2202042.webp",
+            "https://sburksnwmywzytpctjws.supabase.co/storage/v1/object/public/content-media/users/c05a1ac7-a8c9-45a4-b074-d35d7955b5bf/coach-profile/2026/05/1779512910143-05ca6136-6799-4a6c-96cd-877674590cb0.webp"
+          ],
+          "is_active": true,
+          "is_primary": true,
+          "sort_order": 0
+        }
+      ],
+      "products": [
+        {
+          "id": "6965a79c-96e7-4125-8d4a-480b4a116cef",
+          "tenant_id": "8e4f2364-ddd7-4e65-8238-6951d67b4c42",
+          "program_id": "06a42964-2aa4-4287-a724-32fb8526e2df",
+          "price_krw": 99000,
+          "is_active": true,
+          "sale_status": "active",
+          "sale_type": "one_time",
+          "billing_interval": null,
+          "billing_anchor_day": null,
+          "subscription_grace_days": 3,
+          "thumbnail_urls": [],
+          "intro_image_url": "",
+          "content_html": "<p></p>",
+          "created_at": "2026-05-11 12:03:35.590714+00",
+          "updated_at": "2026-05-23 06:14:33.020371+00",
+          "duration_options": [
+            {
+              "id": "596a9382-0303-49d8-ad4e-4ffc33162cb9",
+              "product_id": "6965a79c-96e7-4125-8d4a-480b4a116cef",
+              "duration_months": 1,
+              "price_krw": 99000,
+              "is_enabled": true,
+              "created_at": "2026-05-11 12:03:35.905556+00",
+              "updated_at": "2026-05-23 06:14:33.312173+00"
+            },
+            {
+              "id": "1757f531-973b-45b0-a8e3-42351c1aa171",
+              "product_id": "6965a79c-96e7-4125-8d4a-480b4a116cef",
+              "duration_months": 2,
+              "price_krw": 99000,
+              "is_enabled": false,
+              "created_at": "2026-05-23 06:14:33.312173+00",
+              "updated_at": "2026-05-23 06:14:33.312173+00"
+            },
+            {
+              "id": "a38f5958-052c-4c1c-b9e4-cfc3e44ef2f2",
+              "product_id": "6965a79c-96e7-4125-8d4a-480b4a116cef",
+              "duration_months": 3,
+              "price_krw": 99000,
+              "is_enabled": false,
+              "created_at": "2026-05-23 06:14:33.312173+00",
+              "updated_at": "2026-05-23 06:14:33.312173+00"
+            },
+            {
+              "id": "08af37c6-3517-48d8-ab1a-2948336798de",
+              "product_id": "6965a79c-96e7-4125-8d4a-480b4a116cef",
+              "duration_months": 6,
+              "price_krw": 99000,
+              "is_enabled": false,
+              "created_at": "2026-05-23 06:14:33.312173+00",
+              "updated_at": "2026-05-23 06:14:33.312173+00"
+            }
+          ]
+        }
+      ],
+      "sessions": [
+        {
+          "id": "0ec3b968-c3bd-4aa0-9b79-c6fc4f75b443",
+          "program_id": "06a42964-2aa4-4287-a724-32fb8526e2df",
+          "session_date": "2026-05-16",
+          "title": "대회",
+          "session_type": "training",
+          "is_published": true,
+          "publish_at": null,
+          "content_html": "<p>대회입니다</p>",
+          "created_at": "2026-05-13 03:58:49.809331+00",
+          "updated_at": "2026-05-13 03:58:49.809331+00"
+        }
+      ]
+    },
+    {
+      "id": "0d925d9f-bdb1-4e34-ae70-5609faa20983",
+      "tenant_id": "8e4f2364-ddd7-4e65-8238-6951d67b4c42",
+      "title": "ROAD TO PODIUM : BREAK THE RECORD",
+      "team_name": "ROAD TO PODIUM : BREAK THE RECORD",
+      "slogan": "ROAD TO PODIUM : BREAK THE RECORD",
+      "description": "레이스 경험은 있으나 구체적인 목표기록 달성, 포디움을 목표로 하는 선수들을 위한 프로그램 (각자 선수 스타일에 맞는 피드백 제공)",
+      "thumbnail_url": "https://sburksnwmywzytpctjws.supabase.co/storage/v1/object/public/content-media/users/c05a1ac7-a8c9-45a4-b074-d35d7955b5bf/program-thumbnail/2026/05/1778501314289-1f69e761-de23-4862-a5bf-ce13e56afd13.webp",
+      "difficulty": "intermediate",
+      "daily_workout_minutes": 60,
+      "days_per_week": 5,
+      "start_date": "2026-05-17",
+      "end_date": "2027-12-09",
+      "display_order": 0,
+      "mobile_visibility": "public",
+      "coach_name": "전준현",
+      "coach_instagram": "amor_jh_special",
+      "coach_career": [],
+      "created_at": "2026-05-11 12:08:49.266396+00",
+      "updated_at": "2026-05-13 04:57:24.140458+00",
+      "coaches": [
+        {
+          "coach_profile_id": "69f1c130-0665-4487-989f-1ec850fc094f",
+          "display_name": "전준현",
+          "instagram": "amor_jh.special",
+          "introduction": "소개문 입니다.",
+          "career": [
+            "경력 입니다."
+          ],
+          "image_url": "https://sburksnwmywzytpctjws.supabase.co/storage/v1/object/public/content-media/users/c05a1ac7-a8c9-45a4-b074-d35d7955b5bf/coach-profile/2026/05/1778500654559-4da1705b-913f-4592-a823-4253195cec07.webp",
+          "additional_image_urls": [
+            "https://sburksnwmywzytpctjws.supabase.co/storage/v1/object/public/content-media/users/c05a1ac7-a8c9-45a4-b074-d35d7955b5bf/coach-profile/2026/05/1779512881828-7b127906-6d49-4641-82f8-cab9a28a5455.webp",
+            "https://sburksnwmywzytpctjws.supabase.co/storage/v1/object/public/content-media/users/c05a1ac7-a8c9-45a4-b074-d35d7955b5bf/coach-profile/2026/05/1779512887611-4bb760bf-e0f6-440e-9799-f004ffe2635b.webp",
+            "https://sburksnwmywzytpctjws.supabase.co/storage/v1/object/public/content-media/users/c05a1ac7-a8c9-45a4-b074-d35d7955b5bf/coach-profile/2026/05/1779512892867-5c830d27-33cd-454d-b362-84dc7f45f5e1.webp",
+            "https://sburksnwmywzytpctjws.supabase.co/storage/v1/object/public/content-media/users/c05a1ac7-a8c9-45a4-b074-d35d7955b5bf/coach-profile/2026/05/1779512897554-27f4940a-9df5-413f-a7dc-8bcfd93d75f4.webp",
+            "https://sburksnwmywzytpctjws.supabase.co/storage/v1/object/public/content-media/users/c05a1ac7-a8c9-45a4-b074-d35d7955b5bf/coach-profile/2026/05/1779512905241-30c884b6-f4c9-4de7-aee4-0b03e2202042.webp",
+            "https://sburksnwmywzytpctjws.supabase.co/storage/v1/object/public/content-media/users/c05a1ac7-a8c9-45a4-b074-d35d7955b5bf/coach-profile/2026/05/1779512910143-05ca6136-6799-4a6c-96cd-877674590cb0.webp"
+          ],
+          "is_active": true,
+          "is_primary": true,
+          "sort_order": 0
+        }
+      ],
+      "products": [
+        {
+          "id": "122ee519-825a-4225-a5c6-39ffa5181712",
+          "tenant_id": "8e4f2364-ddd7-4e65-8238-6951d67b4c42",
+          "program_id": "0d925d9f-bdb1-4e34-ae70-5609faa20983",
+          "price_krw": 99000,
+          "is_active": false,
+          "sale_status": "preparing",
+          "sale_type": "one_time",
+          "billing_interval": null,
+          "billing_anchor_day": null,
+          "subscription_grace_days": 3,
+          "thumbnail_urls": [],
+          "intro_image_url": "",
+          "content_html": "",
+          "created_at": "2026-05-11 12:08:49.542175+00",
+          "updated_at": "2026-05-11 12:08:49.542175+00",
+          "duration_options": [
+            {
+              "id": "74fc12e6-e367-4a2f-b818-aa536b69a2fe",
+              "product_id": "122ee519-825a-4225-a5c6-39ffa5181712",
+              "duration_months": 1,
+              "price_krw": 99000,
+              "is_enabled": true,
+              "created_at": "2026-05-11 12:08:49.815323+00",
+              "updated_at": "2026-05-11 12:08:49.815323+00"
+            }
+          ]
+        }
+      ],
+      "sessions": []
+    },
+    {
+      "id": "8f81d9f1-8559-4fd8-bbe9-c49779770461",
+      "tenant_id": "8e4f2364-ddd7-4e65-8238-6951d67b4c42",
+      "title": "HYROX Running : THE PACE",
+      "team_name": "HYROX Running : THE PACE",
+      "slogan": "HYROX Running : THE PACE",
+      "description": "하이록스를 잘하고 싶은데\r\n3대운동도 잘하고 힘이 좋지만\r\n레이스만 하면 러닝 페이스가 떨어지고 기록이 따라오지 않는다면?\r\n\r\n단순히 러닝클래스를 다니고, 마일리지를 쌓는다고 해서 하이록스 러닝 페이스가 빨라지지 않습니다.\r\n\r\n저는 출전한 모든 하이록스 싱글, 더블경기 러닝 페이스 TOP.3 밖으로 밀려나본적 없습니다.\r\n\r\n하이록스에서 러닝을 잘하고 싶은 \r\n선수, 집중적으로 러닝을 보완, 발전하고 싶다면 선택하세요 \r\n‘전선수(전코치/아모르코치)’\r\n가 가장 🔥강력 추천🔥하는 클래스\r\n하이록스 런페이스 \r\n무조건 올라갑니다.",
+      "thumbnail_url": "https://sburksnwmywzytpctjws.supabase.co/storage/v1/object/public/content-media/users/c05a1ac7-a8c9-45a4-b074-d35d7955b5bf/program-thumbnail/2026/05/1779512834135-16d1e680-4696-4d6d-8ca2-28c9fc53ca54.webp",
+      "difficulty": "intermediate",
+      "daily_workout_minutes": 60,
+      "days_per_week": 5,
+      "start_date": "2026-05-19",
+      "end_date": "2028-06-11",
+      "display_order": 1,
+      "mobile_visibility": "public",
+      "coach_name": "전준현",
+      "coach_instagram": "amor_jh.special",
+      "coach_career": [
+        "경력 입니다."
+      ],
+      "created_at": "2026-05-11 12:28:43.67239+00",
+      "updated_at": "2026-05-23 05:07:18.280805+00",
+      "coaches": [
+        {
+          "coach_profile_id": "69f1c130-0665-4487-989f-1ec850fc094f",
+          "display_name": "전준현",
+          "instagram": "amor_jh.special",
+          "introduction": "소개문 입니다.",
+          "career": [
+            "경력 입니다."
+          ],
+          "image_url": "https://sburksnwmywzytpctjws.supabase.co/storage/v1/object/public/content-media/users/c05a1ac7-a8c9-45a4-b074-d35d7955b5bf/coach-profile/2026/05/1778500654559-4da1705b-913f-4592-a823-4253195cec07.webp",
+          "additional_image_urls": [
+            "https://sburksnwmywzytpctjws.supabase.co/storage/v1/object/public/content-media/users/c05a1ac7-a8c9-45a4-b074-d35d7955b5bf/coach-profile/2026/05/1779512881828-7b127906-6d49-4641-82f8-cab9a28a5455.webp",
+            "https://sburksnwmywzytpctjws.supabase.co/storage/v1/object/public/content-media/users/c05a1ac7-a8c9-45a4-b074-d35d7955b5bf/coach-profile/2026/05/1779512887611-4bb760bf-e0f6-440e-9799-f004ffe2635b.webp",
+            "https://sburksnwmywzytpctjws.supabase.co/storage/v1/object/public/content-media/users/c05a1ac7-a8c9-45a4-b074-d35d7955b5bf/coach-profile/2026/05/1779512892867-5c830d27-33cd-454d-b362-84dc7f45f5e1.webp",
+            "https://sburksnwmywzytpctjws.supabase.co/storage/v1/object/public/content-media/users/c05a1ac7-a8c9-45a4-b074-d35d7955b5bf/coach-profile/2026/05/1779512897554-27f4940a-9df5-413f-a7dc-8bcfd93d75f4.webp",
+            "https://sburksnwmywzytpctjws.supabase.co/storage/v1/object/public/content-media/users/c05a1ac7-a8c9-45a4-b074-d35d7955b5bf/coach-profile/2026/05/1779512905241-30c884b6-f4c9-4de7-aee4-0b03e2202042.webp",
+            "https://sburksnwmywzytpctjws.supabase.co/storage/v1/object/public/content-media/users/c05a1ac7-a8c9-45a4-b074-d35d7955b5bf/coach-profile/2026/05/1779512910143-05ca6136-6799-4a6c-96cd-877674590cb0.webp"
+          ],
+          "is_active": true,
+          "is_primary": true,
+          "sort_order": 0
+        }
+      ],
+      "products": [
+        {
+          "id": "bb98d908-ab37-4ed2-ab52-87520198b89c",
+          "tenant_id": "8e4f2364-ddd7-4e65-8238-6951d67b4c42",
+          "program_id": "8f81d9f1-8559-4fd8-bbe9-c49779770461",
+          "price_krw": 99000,
+          "is_active": false,
+          "sale_status": "preparing",
+          "sale_type": "one_time",
+          "billing_interval": null,
+          "billing_anchor_day": null,
+          "subscription_grace_days": 3,
+          "thumbnail_urls": [],
+          "intro_image_url": "",
+          "content_html": "",
+          "created_at": "2026-05-11 12:28:43.954382+00",
+          "updated_at": "2026-05-11 12:28:43.954382+00",
+          "duration_options": [
+            {
+              "id": "ee1abb1c-b5ac-4d9f-a887-73dd225889b5",
+              "product_id": "bb98d908-ab37-4ed2-ab52-87520198b89c",
+              "duration_months": 1,
+              "price_krw": 99000,
+              "is_enabled": true,
+              "created_at": "2026-05-11 12:28:44.262659+00",
+              "updated_at": "2026-05-11 12:28:44.262659+00"
+            }
+          ]
+        }
+      ],
+      "sessions": []
+    },
+    {
+      "id": "c881344f-267c-4aa4-ad49-008e4275ec1f",
+      "tenant_id": "8e4f2364-ddd7-4e65-8238-6951d67b4c42",
+      "title": "HYROX Station : THE POWER",
+      "team_name": "HYROX Station : THE POWER",
+      "slogan": "HYROX Station : THE POWER",
+      "description": "러너, sub-3에 러닝은 너무 잘하지만하이록스에 도전하고 싶다면?\r\n하이록스의 스테이션들에 대한 부담이 있다면? \r\n\r\n단순한 근력운동, 3대운동 등 오래걸리고 위험부담이 큰 스테이션 훈련이 아닌 보다 세밀하고 직접적인\r\n도움이 되는 스테이션 훈련 \r\n\r\n저는 하이록스 선수로서 러닝은 잘했지만 스테이션이 남들에 비해 상대적으로 부족했던 시합 마지막 문턱에서 넘어진적이 있었습니다.\r\n\r\n하지만 제가 SUB-1과 포디움에 올라갈수 있게 만든 스테이션별 목적에 맞는 훈련으로 보완해드리겠습니다.",
+      "thumbnail_url": "https://sburksnwmywzytpctjws.supabase.co/storage/v1/object/public/content-media/users/c05a1ac7-a8c9-45a4-b074-d35d7955b5bf/program-thumbnail/2026/05/1779512850686-61fc17d2-7dd9-4961-b0e5-a2f550ab127c.webp",
+      "difficulty": "intermediate",
+      "daily_workout_minutes": 60,
+      "days_per_week": 5,
+      "start_date": "2026-05-11",
+      "end_date": "2027-10-19",
+      "display_order": 1,
+      "mobile_visibility": "public",
+      "coach_name": "전준현",
+      "coach_instagram": "amor_jh.special",
+      "coach_career": [
+        "경력 입니다."
+      ],
+      "created_at": "2026-05-11 12:29:53.23379+00",
+      "updated_at": "2026-05-23 05:07:34.437728+00",
+      "coaches": [
+        {
+          "coach_profile_id": "69f1c130-0665-4487-989f-1ec850fc094f",
+          "display_name": "전준현",
+          "instagram": "amor_jh.special",
+          "introduction": "소개문 입니다.",
+          "career": [
+            "경력 입니다."
+          ],
+          "image_url": "https://sburksnwmywzytpctjws.supabase.co/storage/v1/object/public/content-media/users/c05a1ac7-a8c9-45a4-b074-d35d7955b5bf/coach-profile/2026/05/1778500654559-4da1705b-913f-4592-a823-4253195cec07.webp",
+          "additional_image_urls": [
+            "https://sburksnwmywzytpctjws.supabase.co/storage/v1/object/public/content-media/users/c05a1ac7-a8c9-45a4-b074-d35d7955b5bf/coach-profile/2026/05/1779512881828-7b127906-6d49-4641-82f8-cab9a28a5455.webp",
+            "https://sburksnwmywzytpctjws.supabase.co/storage/v1/object/public/content-media/users/c05a1ac7-a8c9-45a4-b074-d35d7955b5bf/coach-profile/2026/05/1779512887611-4bb760bf-e0f6-440e-9799-f004ffe2635b.webp",
+            "https://sburksnwmywzytpctjws.supabase.co/storage/v1/object/public/content-media/users/c05a1ac7-a8c9-45a4-b074-d35d7955b5bf/coach-profile/2026/05/1779512892867-5c830d27-33cd-454d-b362-84dc7f45f5e1.webp",
+            "https://sburksnwmywzytpctjws.supabase.co/storage/v1/object/public/content-media/users/c05a1ac7-a8c9-45a4-b074-d35d7955b5bf/coach-profile/2026/05/1779512897554-27f4940a-9df5-413f-a7dc-8bcfd93d75f4.webp",
+            "https://sburksnwmywzytpctjws.supabase.co/storage/v1/object/public/content-media/users/c05a1ac7-a8c9-45a4-b074-d35d7955b5bf/coach-profile/2026/05/1779512905241-30c884b6-f4c9-4de7-aee4-0b03e2202042.webp",
+            "https://sburksnwmywzytpctjws.supabase.co/storage/v1/object/public/content-media/users/c05a1ac7-a8c9-45a4-b074-d35d7955b5bf/coach-profile/2026/05/1779512910143-05ca6136-6799-4a6c-96cd-877674590cb0.webp"
+          ],
+          "is_active": true,
+          "is_primary": true,
+          "sort_order": 0
+        }
+      ],
+      "products": [
+        {
+          "id": "c05d7e72-c016-4ec5-b278-e78149ea6aa5",
+          "tenant_id": "8e4f2364-ddd7-4e65-8238-6951d67b4c42",
+          "program_id": "c881344f-267c-4aa4-ad49-008e4275ec1f",
+          "price_krw": 99000,
+          "is_active": false,
+          "sale_status": "preparing",
+          "sale_type": "one_time",
+          "billing_interval": null,
+          "billing_anchor_day": null,
+          "subscription_grace_days": 3,
+          "thumbnail_urls": [],
+          "intro_image_url": "",
+          "content_html": "",
+          "created_at": "2026-05-11 12:29:53.530599+00",
+          "updated_at": "2026-05-11 12:29:53.530599+00",
+          "duration_options": [
+            {
+              "id": "f4324f6c-6576-41d4-83dc-6cb5ef83587c",
+              "product_id": "c05d7e72-c016-4ec5-b278-e78149ea6aa5",
+              "duration_months": 1,
+              "price_krw": 99000,
+              "is_enabled": true,
+              "created_at": "2026-05-11 12:29:53.813229+00",
+              "updated_at": "2026-05-11 12:29:53.813229+00"
+            }
+          ]
+        }
+      ],
+      "sessions": []
+    }
+  ]
+}
