@@ -1,3 +1,8 @@
-
-amor/db.json
-amor/edge.md
+.DS_Store
+node_modules
+.next
+out
+dist
+.turbo
+.env
+.env*.local
