@@ -1,0 +1,14 @@
+{
+  "redirects": [
+    {
+      "source": "/admin",
+      "destination": "https://clyrtraining.vercel.app/t/amor/tenant/login",
+      "permanent": true
+    },
+    {
+      "source": "/admin/",
+      "destination": "https://clyrtraining.vercel.app/t/amor/tenant/login",
+      "permanent": true
+    }
+  ]
+}
