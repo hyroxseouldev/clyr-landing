@@ -11,12 +11,12 @@ export const programs = [
     "coach_name": "전준현",
     "products": [
       {
-        "price_krw": 105000,
+        "price_krw": 150000,
         "is_active": true,
         "duration_options": [
           {
             "duration_months": 1,
-            "price_krw": 105000,
+            "price_krw": 150000,
             "is_enabled": true
           }
         ]
@@ -35,12 +35,12 @@ export const programs = [
     "coach_name": "전준현",
     "products": [
       {
-        "price_krw": 210000,
+        "price_krw": 300000,
         "is_active": true,
         "duration_options": [
           {
             "duration_months": 1,
-            "price_krw": 210000,
+            "price_krw": 300000,
             "is_enabled": true
           }
         ]
@@ -59,12 +59,12 @@ export const programs = [
     "coach_name": "전준현",
     "products": [
       {
-        "price_krw": 160000,
+        "price_krw": 200000,
         "is_active": true,
         "duration_options": [
           {
             "duration_months": 1,
-            "price_krw": 160000,
+            "price_krw": 200000,
             "is_enabled": true
           }
         ]
@@ -83,12 +83,12 @@ export const programs = [
     "coach_name": "전준현",
     "products": [
       {
-        "price_krw": 140000,
+        "price_krw": 200000,
         "is_active": true,
         "duration_options": [
           {
             "duration_months": 1,
-            "price_krw": 140000,
+            "price_krw": 200000,
             "is_enabled": true
           }
         ]

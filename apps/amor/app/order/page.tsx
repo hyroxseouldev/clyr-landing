@@ -1,5 +1,7 @@
 import OrderPageClient from './page-client';
 
+export const dynamic = 'force-dynamic';
+
 export default function Page() {
-  return <OrderPageClient />;
+  return <OrderPageClient initialNowMs={Date.now()} />;
 }
