@@ -1,0 +1,5 @@
+[functions.create-guest-order]
+verify_jwt = false
+
+[functions.lookup-guest-orders]
+verify_jwt = false
