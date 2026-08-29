@@ -9,10 +9,15 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
     "@vercel/analytics": "^1.5.0",
+    "daisyui": "^5.7.22",
+    "framer-motion": "^13.1.1",
+    "lucide-react": "^1.37.0",
     "next": "^15.3.3",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "tailwindcss": "^4.3.3"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
