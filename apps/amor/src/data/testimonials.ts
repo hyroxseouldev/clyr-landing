@@ -22,7 +22,7 @@ export const testimonials = [
   {
     id: 'hyun-sta-sweat-monday',
     headline: '선택의 기준이 된 코칭',
-    imageSrc: '/assets/testimonials/hyun-sta-hyrox.jpeg',
+    imageSrc: '/assets/testimonials/hyun-sta-hyrox.webp',
     imageAlt: 'HYROX 챔피언스 포토월 앞에 선 hyun.sta와 선수들',
     featured: true,
     quotes: [
@@ -43,7 +43,7 @@ export const testimonials = [
   {
     id: 'im-yubin-lee-gyuri-hyrox',
     headline: '대회 직전, 기록을 바꾼 7번의 레슨',
-    imageSrc: '/assets/testimonials/im-yubin-lee-gyuri-hyrox.jpeg',
+    imageSrc: '/assets/testimonials/im-yubin-lee-gyuri-hyrox.webp',
     imageAlt: 'HYROX 챔피언스 포토월 앞에 선 임유빈, 이규리 선수와 전준현 코치',
     featured: true,
     quotes: [

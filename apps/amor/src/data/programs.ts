@@ -1,3 +1,28 @@
+export interface ProductDurationOption {
+  duration_months: number;
+  price_krw: number;
+  is_enabled: boolean;
+}
+
+export interface Product {
+  price_krw: number;
+  is_active: boolean;
+  duration_options: readonly ProductDurationOption[];
+}
+
+export interface Program {
+  id: string;
+  title: string;
+  description: string;
+  thumbnail_url: string;
+  difficulty: "beginner" | "intermediate" | "advanced";
+  daily_workout_minutes: number;
+  days_per_week: number | string;
+  display_order: number;
+  coach_name: string;
+  products: readonly Product[];
+}
+
 export const programs = [
   {
     "id": "06a42964-2aa4-4287-a724-32fb8526e2df",
@@ -95,4 +120,4 @@ export const programs = [
       }
     ]
   }
-] as const;
+] as const satisfies readonly Program[];

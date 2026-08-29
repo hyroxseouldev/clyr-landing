@@ -1,80 +1,8 @@
 import React from "react";
+import { landingProgramCards } from "@/data/program-catalog";
 import { getProgramPricing } from "@/pricing";
 
-// ===== Types =====
-interface PriceCard {
-  programId: string;
-  regularText: string;
-  name: string;
-  description: string;
-  features: string[];
-  href: string;
-  isFeatured?: boolean;
-}
-
 const PricingSection = () => {
-  // ===== Data =====
-  const landingPriceCards: PriceCard[] = [
-    {
-      programId: "06a42964-2aa4-4287-a724-32fb8526e2df",
-      regularText: "₩150,000",
-      name: "기본 4주반",
-      description:
-        "러닝 + 스테이션 통합 기본반. 하이록스를 처음 시작하거나 레이스 경험이 적은 분을 위한 4주 프로그램입니다.",
-      features: [
-        "4주 클래스",
-        "러닝 + 스테이션 통합 구성",
-        "4주 마지막 대면 미팅 및 레슨 1회",
-        "개인 수준에 맞춘 기본 훈련 방향 제공",
-      ],
-      href: "/order?program=06a42964-2aa4-4287-a724-32fb8526e2df",
-    },
-    {
-      programId: "0d925d9f-bdb1-4e34-ae70-5609faa20983",
-      regularText: "₩300,000",
-      name: "대회준비반",
-      description:
-        "구체적인 목표 기록 달성, 포디움, 대회 완주 전략까지 준비하는 러닝 + 스테이션 통합 클래스입니다.",
-      features: [
-        "4주 클래스",
-        "일주일에 4회 프로그램 제공",
-        "러닝 + 스테이션 통합 훈련",
-        "2주 간격 대면 훈련 및 미팅, 총 2회 진행",
-      ],
-      href: "/order?program=0d925d9f-bdb1-4e34-ae70-5609faa20983",
-      isFeatured: true,
-    },
-    {
-      programId: "8f81d9f1-8559-4fd8-bbe9-c49779770461",
-      regularText: "₩200,000",
-      name: "러닝 클래스",
-      description:
-        "하이록스에서 러닝 페이스가 무너지거나, 러닝 구간 기록을 집중적으로 끌어올리고 싶은 분을 위한 클래스입니다.",
-      features: [
-        "4주 클래스",
-        "일주일에 3회 또는 4회",
-        "러닝 수준과 강도에 따른 프로그램 제공",
-        "개인별 페이스와 목표에 맞춘 러닝 보완",
-      ],
-      href: "/order?program=8f81d9f1-8559-4fd8-bbe9-c49779770461",
-    },
-    {
-      programId: "c881344f-267c-4aa4-ad49-008e4275ec1f",
-      regularText: "₩200,000",
-      name: "하이록스 스테이션",
-      description:
-        "러닝은 자신 있지만 스테이션에 부담이 있거나, 종목별 목적에 맞는 보완 훈련이 필요한 분을 위한 4주 클래스입니다.",
-      features: [
-        "4주 클래스",
-        "일주일에 3회 프로그램 제공",
-        "스테이션별 목적 훈련 프로그래밍",
-        "부족한 구간을 보완하는 근지구력 훈련",
-      ],
-      href: "/order?program=c881344f-267c-4aa4-ad49-008e4275ec1f",
-    },
-  ];
-
-  // ===== Helper Functions =====
   function formatPrice(value: number) {
     return `₩${new Intl.NumberFormat("ko-KR").format(value)}`;
   }
@@ -107,7 +35,7 @@ const PricingSection = () => {
         </div>
 
         <div className="mx-auto mt-8 grid max-w-4xl gap-4 md:grid-cols-2 lg:max-w-6xl">
-          {landingPriceCards.map((card) => {
+          {landingProgramCards.map((card) => {
             const pricing = getProgramPricing(card.programId);
             if (!pricing) return null;
 

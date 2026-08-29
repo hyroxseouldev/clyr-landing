@@ -18,7 +18,6 @@ const ColaboSection = () => {
                 width={240}
                 height={80}
                 className="w-full h-auto"
-                priority
               />
             </div>
 

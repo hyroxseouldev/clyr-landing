@@ -3,12 +3,40 @@
 import { useEffect, useState } from "react";
 import { assertPublicSupabaseEnv, supabaseUrl, tenantId } from "@/env";
 
+type MessageType = "info" | "warning" | "error";
+
+interface LookupMessage {
+  type: MessageType;
+  text: string;
+}
+
+interface GuestOrderPayload {
+  programName?: string;
+  totalPriceKrw?: number;
+  monthlyPriceKrw?: number;
+  durationMonths?: number;
+}
+
+interface GuestOrder {
+  id: string;
+  status?: "pending" | "confirmed" | "canceled" | string;
+  created_at?: string;
+  order_payload?: GuestOrderPayload;
+}
+
+interface LookupResponse {
+  ok?: boolean;
+  error?: string;
+  message?: string;
+  orders?: GuestOrder[];
+}
+
 export default function LookUpPage() {
   const [buyerName, setBuyerName] = useState("");
   const [buyerPhone, setBuyerPhone] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [orders, setOrders] = useState([]);
-  const [message, setMessage] = useState({
+  const [orders, setOrders] = useState<GuestOrder[]>([]);
+  const [message, setMessage] = useState<LookupMessage>({
     type: "info",
     text: "주문자 이름과 핸드폰 번호를 입력한 뒤 조회해 주세요.",
   });
@@ -17,14 +45,14 @@ export default function LookUpPage() {
     assertPublicSupabaseEnv();
   }, []);
 
-  const formatPrice = (value) =>
+  const formatPrice = (value: number) =>
     new Intl.NumberFormat("ko-KR", {
       style: "currency",
       currency: "KRW",
       maximumFractionDigits: 0,
     }).format(Number(value) || 0);
 
-  const formatDate = (value) => {
+  const formatDate = (value?: string) => {
     if (!value) return "-";
     const date = new Date(value);
     if (Number.isNaN(date.getTime())) return "-";
@@ -37,14 +65,14 @@ export default function LookUpPage() {
     }).format(date);
   };
 
-  const statusMeta = (status) =>
+  const statusMeta = (status?: GuestOrder["status"]) =>
     ({
       pending: { label: "입금 확인 대기", className: "badge-warning" },
       confirmed: { label: "확인 완료", className: "badge-success" },
       canceled: { label: "취소됨", className: "badge-error" },
     })[status] || { label: status || "상태 확인 중", className: "badge-ghost" };
 
-  const renderOrders = (ordersData) => {
+  const renderOrders = (ordersData: GuestOrder[]) => {
     if (!ordersData.length) {
       setMessage({
         type: "warning",
@@ -61,7 +89,7 @@ export default function LookUpPage() {
     });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!buyerName.trim() || !buyerPhone.trim()) {
@@ -92,7 +120,7 @@ export default function LookUpPage() {
         },
       );
 
-      const result = await response.json().catch(() => ({}));
+      const result = (await response.json().catch(() => ({}))) as LookupResponse;
       if (!response.ok || !result.ok) {
         throw new Error(
           result.error || result.message || "주문 조회에 실패했습니다.",
@@ -101,9 +129,11 @@ export default function LookUpPage() {
 
       renderOrders(result.orders || []);
     } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "알 수 없는 오류가 발생했습니다.";
       setMessage({
         type: "error",
-        text: `주문 조회 중 오류가 발생했습니다. ${error.message}`,
+        text: `주문 조회 중 오류가 발생했습니다. ${errorMessage}`,
       });
       setOrders([]);
     } finally {
@@ -183,6 +213,7 @@ export default function LookUpPage() {
             <div className="card-body border-t border-base-300 pt-6">
               {message && (
                 <div
+                  role="alert"
                   className={`alert ${message.type === "error" ? "alert-error" : message.type === "warning" ? "alert-warning" : "alert-info"} shadow-lg`}
                 >
                   <span>{message.text}</span>

@@ -2,33 +2,10 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { programs } from "@/data/programs";
+import { sortedPrograms } from "@/data/program-catalog";
+import type { Program } from "@/data/programs";
 import { assertPublicSupabaseEnv, supabaseUrl, tenantId } from "@/env";
 import { EARLY_BIRD_END_AT_MS, getProgramPricing } from "@/pricing";
-
-// Define types with readonly support and flexible types
-interface Product {
-  is_active: boolean;
-  price_krw: number;
-  duration_options?: ReadonlyArray<{
-    duration_months: number;
-    price_krw: number;
-    is_enabled: boolean;
-  }>;
-}
-
-interface Program {
-  id: string;
-  title: string;
-  description: string;
-  thumbnail_url?: string;
-  difficulty?: string;
-  days_per_week?: string | number; // Changed to accept both string and number
-  daily_workout_minutes?: string | number; // Changed to accept both string and number
-  coach_name?: string;
-  display_order?: number;
-  products?: ReadonlyArray<Product>;
-}
 
 interface Duration {
   duration_months: number;
@@ -38,12 +15,6 @@ interface Duration {
   regularPriceKrw?: number;
   finalPriceKrw?: number;
   regular_total_price_krw?: number;
-}
-
-interface PricingResult {
-  finalPriceKrw?: number;
-  regularPriceKrw?: number;
-  pricingPhase?: string;
 }
 
 interface OrderPayload {
@@ -67,6 +38,12 @@ interface OrderPayload {
   };
 }
 
+interface OrderResponse {
+  ok?: boolean;
+  error?: string;
+  message?: string;
+}
+
 const durationOptions: Duration[] = [1, 2, 3].map((months) => ({
   duration_months: months,
   price_krw: 0,
@@ -79,6 +56,46 @@ const bankAccount = {
   holderName: "전준현",
 };
 
+const priceFormatter = new Intl.NumberFormat("ko-KR", {
+  style: "currency",
+  currency: "KRW",
+  maximumFractionDigits: 0,
+});
+
+const formatPrice = (value: number) => priceFormatter.format(value || 0);
+
+const difficultyLabel = (difficulty?: Program["difficulty"]) =>
+  ({
+    beginner: "입문",
+    intermediate: "중급",
+    advanced: "상급",
+  })[difficulty || ""] ||
+  difficulty ||
+  "-";
+
+const enabledDurations = (program: Program) => {
+  const pricing = getProgramPricing(program.id);
+  const monthlyPrice =
+    pricing?.finalPriceKrw ||
+    program.products.find((item) => item.is_active)?.price_krw ||
+    99000;
+  const regularMonthlyPrice = pricing?.regularPriceKrw || monthlyPrice;
+
+  return durationOptions.map((option) => ({
+    ...option,
+    pricingPhase: pricing?.pricingPhase || "regular",
+    regularPriceKrw: regularMonthlyPrice,
+    finalPriceKrw: monthlyPrice,
+    regular_total_price_krw: regularMonthlyPrice * option.duration_months,
+    price_krw: monthlyPrice * option.duration_months,
+  }));
+};
+
+const displayValue = (value?: string | number) => {
+  if (value === undefined || value === null) return "-";
+  return value.toString();
+};
+
 export default function OrderPageClient() {
   const [selectedProgram, setSelectedProgram] = useState<Program | null>(null);
   const [selectedDuration, setSelectedDuration] = useState<Duration | null>(
@@ -86,45 +103,11 @@ export default function OrderPageClient() {
   );
   const [isLoading, setIsLoading] = useState(false);
 
-  const formatPrice = (value: number) =>
-    new Intl.NumberFormat("ko-KR", {
-      style: "currency",
-      currency: "KRW",
-      maximumFractionDigits: 0,
-    }).format(value || 0);
-
-  const difficultyLabel = (difficulty?: string) =>
-    ({
-      beginner: "입문",
-      intermediate: "중급",
-      advanced: "상급",
-    })[difficulty || ""] ||
-    difficulty ||
-    "-";
-
-  const enabledDurations = (program: Program) => {
-    const pricing = getProgramPricing(program.id) as PricingResult | undefined;
-    const monthlyPrice =
-      pricing?.finalPriceKrw ||
-      program.products?.find((item) => item.is_active)?.price_krw ||
-      99000;
-    const regularMonthlyPrice = pricing?.regularPriceKrw || monthlyPrice;
-
-    return durationOptions.map((option) => ({
-      ...option,
-      pricingPhase: pricing?.pricingPhase || "regular",
-      regularPriceKrw: regularMonthlyPrice,
-      finalPriceKrw: monthlyPrice,
-      regular_total_price_krw: regularMonthlyPrice * option.duration_months,
-      price_krw: monthlyPrice * option.duration_months,
-    }));
-  };
-
   const handleProgramChange = (programId: string) => {
-    const program = programs.find((p) => p.id === programId);
+    const program = sortedPrograms.find((p) => p.id === programId);
     if (!program) return;
-    setSelectedProgram(program as Program);
-    const durations = enabledDurations(program as Program);
+    setSelectedProgram(program);
+    const durations = enabledDurations(program);
     setSelectedDuration(durations[0]);
   };
 
@@ -189,7 +172,7 @@ export default function OrderPageClient() {
         },
       );
 
-      const result = await response.json().catch(() => ({}));
+      const result = (await response.json().catch(() => ({}))) as OrderResponse;
       if (!response.ok || !result.ok) {
         throw new Error(
           result.error || result.message || "주문 생성에 실패했습니다.",
@@ -213,17 +196,14 @@ export default function OrderPageClient() {
 
   useEffect(() => {
     assertPublicSupabaseEnv();
-    const sortedPrograms = [...programs].sort(
-      (a, b) => (a.display_order || 0) - (b.display_order || 0),
-    );
     const params = new URLSearchParams(window.location.search);
     const requestedId = params.get("program");
     const program =
       sortedPrograms.find((item) => item.id === requestedId) ||
       sortedPrograms[0];
     if (program) {
-      setSelectedProgram(program as Program);
-      const durations = enabledDurations(program as Program);
+      setSelectedProgram(program);
+      const durations = enabledDurations(program);
       setSelectedDuration(durations[0]);
     }
 
@@ -232,8 +212,8 @@ export default function OrderPageClient() {
     const timer =
       msUntilEarlyBirdEnds > 0
         ? setTimeout(() => {
-            if (selectedProgram) {
-              const durations = enabledDurations(selectedProgram);
+            if (program) {
+              const durations = enabledDurations(program);
               setSelectedDuration(durations[0]);
             }
           }, msUntilEarlyBirdEnds + 1000)
@@ -242,14 +222,7 @@ export default function OrderPageClient() {
     return () => {
       if (timer) clearTimeout(timer);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  // Helper function to display values safely
-  const displayValue = (value?: string | number) => {
-    if (value === undefined || value === null) return "-";
-    return value.toString();
-  };
 
   if (!selectedProgram || !selectedDuration) {
     return (
@@ -295,9 +268,7 @@ export default function OrderPageClient() {
                   <div>
                     <figure className="aspect-square rounded-xl overflow-hidden bg-base-300 relative">
                       <Image
-                        src={
-                          selectedProgram.thumbnail_url || "/assets/record.png"
-                        }
+                        src={selectedProgram.thumbnail_url}
                         alt={selectedProgram.title}
                         fill
                         className="object-cover"
@@ -319,7 +290,7 @@ export default function OrderPageClient() {
                         value={selectedProgram.id}
                         onChange={(e) => handleProgramChange(e.target.value)}
                       >
-                        {programs.map((p) => (
+                        {sortedPrograms.map((p) => (
                           <option key={p.id} value={p.id}>
                             {p.title}
                           </option>

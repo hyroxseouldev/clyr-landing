@@ -95,24 +95,6 @@ const SocialProofSection = () => {
         </div>
       </div>
 
-      <style jsx>{`
-        @keyframes scroll {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-50%);
-          }
-        }
-
-        .marquee-track {
-          animation: scroll 30s linear infinite;
-        }
-
-        .marquee-track:hover {
-          animation-play-state: paused;
-        }
-      `}</style>
     </section>
   );
 };

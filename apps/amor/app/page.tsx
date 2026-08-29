@@ -1,5 +1,3 @@
-"use client";
-
 import HeroSection from "./components/home/hero-section";
 import CoachSection from "./components/home/coach-section";
 import ProblemSection from "./components/home/problem-section";
