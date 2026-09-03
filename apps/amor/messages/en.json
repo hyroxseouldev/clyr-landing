@@ -1,0 +1,149 @@
+{
+  "Common": {
+    "home": "AMOR LAB home",
+    "coach": "Coach",
+    "programs": "Programs",
+    "reviews": "Reviews",
+    "faq": "FAQ",
+    "lookup": "Check order",
+    "order": "Order now",
+    "consult": "Consult",
+    "korean": "한국어",
+    "english": "English"
+  },
+  "Home": {
+    "eyebrow": "HYROX ONLINE COACHING",
+    "title": "Go faster. Get stronger.\nBuild your HYROX.",
+    "description": "Data-driven 1:1 coaching\nfrom your first race to a new personal best.",
+    "viewPrograms": "View programs",
+    "viewReviews": "Read real reviews",
+    "stats": {
+      "experience": "Coaching experience",
+      "record": "HYROX record",
+      "improvement": "Average improvement"
+    }
+  },
+  "Order": {
+    "title": "Order a program",
+    "description": "Review your coaching program, then enter your details and preferred payment method.",
+    "programInfo": "Program details",
+    "programSelect": "Choose a program",
+    "duration": "Program duration",
+    "difficulty": "Level",
+    "weeklyTraining": "Weekly training",
+    "dailyDuration": "Daily duration",
+    "buyerInfo": "Your details",
+    "buyerName": "Name",
+    "buyerPhone": "Phone number",
+    "email": "Email",
+    "goal": "Goal and notes",
+    "goalPlaceholder": "Share your current record, target race, and what you want to improve.",
+    "paymentMethod": "Payment method",
+    "card": "Credit or debit card",
+    "cardComingSoon": "Card payments are coming soon",
+    "kakaoPay": "Kakao Pay",
+    "kakaoPayComingSoon": "Digital payments are coming soon",
+    "bankTransfer": "Bank transfer",
+    "account": "Transfer account",
+    "accountHolder": "Account holder: {name}",
+    "summary": "Order summary",
+    "coach": "Coach",
+    "paymentAmount": "Payment amount",
+    "agreement": "I have reviewed the order details and payment instructions.",
+    "months": "{count} month(s)",
+    "weeklyValue": "{count} sessions / week",
+    "minutes": "{count} min",
+    "difficultyBeginner": "Beginner",
+    "difficultyIntermediate": "Intermediate",
+    "difficultyAdvanced": "Advanced",
+    "namePlaceholder": "Jane Doe",
+    "programUnavailable": "We could not load the program information. Please try again.",
+    "createFailed": "We could not create your order.",
+    "unknownError": "An unknown error occurred.",
+    "processing": "Submitting order...",
+    "completedAlert": "Your order is complete.\nTransfer account: {bankName} {accountNumber}\nAccount holder: {holderName}",
+    "submit": "Submit order",
+    "success": "Your order has been submitted.",
+    "error": "Something went wrong while submitting your order."
+  },
+  "Lookup": {
+    "title": "Check your order",
+    "description": "Enter the name and phone number used when placing your order.",
+    "buyerName": "Name",
+    "buyerPhone": "Phone number",
+    "namePlaceholder": "Jane Doe",
+    "submit": "Check order",
+    "loading": "Checking...",
+    "initialMessage": "Enter the name and phone number used for your order.",
+    "missingFields": "Enter both your name and phone number.",
+    "searching": "Looking up your order history.",
+    "notFound": "No matching orders were found. Check your name and phone number, then try again.",
+    "found": "Found {count} order(s).",
+    "lookupFailed": "We could not look up your order.",
+    "unknownError": "An unknown error occurred.",
+    "lookupError": "An error occurred while checking your order. {errorMessage}",
+    "defaultProgram": "AMOR program",
+    "orderNumber": "Order number {id}",
+    "paymentAmount": "Payment amount",
+    "duration": "Program duration",
+    "months": "{count} month(s)",
+    "orderedAt": "Ordered on",
+    "pending": "Awaiting transfer confirmation",
+    "confirmed": "Confirmed",
+    "canceled": "Canceled",
+    "checkingStatus": "Checking status"
+  },
+  "Footer": {
+    "eyebrow": "FINALLY",
+    "title": "A better record.\nA stronger you.",
+    "description": "Join the AMOR LAB crew today\nand rewrite your HYROX record.",
+    "join": "Join the AMOR LAB crew →",
+    "lookup": "Check your order",
+    "terms": "Terms",
+    "privacy": "Privacy policy",
+    "business": "Business information"
+  },
+  "Faq": {
+    "title": "Frequently asked questions",
+    "description": "Answers to the questions we hear most about AMOR LAB.",
+    "items": [
+      {"q": "Q. Can I train at a regular gym without HYROX equipment?", "a": "Yes. We build substitute WODs around dumbbells, barbells and treadmills to develop the abilities HYROX requires."},
+      {"q": "Q. Can a complete beginner follow the program?", "a": "Absolutely. We adjust the plan to your current fitness level and build from the fundamentals without rushing."},
+      {"q": "Q. How does feedback work?", "a": "Upload how your workout felt and the coach will provide form and pacing feedback within 48 hours."}
+    ]
+  },
+  "Pricing": {
+    "eyebrow": "PROGRAM & PRICING",
+    "title": "A coaching program\nfor your goal",
+    "description": "Choose a program tailored to your current ability and target.",
+    "customWod": "1:1 custom WOD",
+    "feedback": "Live communication and feedback",
+    "recommended": "🔥 Recommended",
+    "perMonth": "/ month",
+    "apply": "Apply now →"
+  },
+  "Problem": {
+    "eyebrow": "PROBLEM",
+    "title": "Running well is not enough.\nStrength alone will not solve it.",
+    "description": "HYROX is more than a fitness test.\nIt is the science of transitions and pacing.",
+    "questions": ["Do you lose your pace when switching from running to functional work?", "Are you stuck without a structured HYROX-specific routine?", "Does your time fall apart on Wall Ball Shots late in the race?"],
+    "insight": "💡 Key insight — HYROX is the science of disciplined transitions and pacing, not just fitness.",
+    "balance": "The balance between training load and recovery\nis the critical point that decides your record."
+  },
+  "Social": {
+    "title": "Our members are already\nbreaking through their limits",
+    "description": "Real stories from crews who set new records with AMOR LAB.",
+    "cta": "Challenge my personal best →"
+  },
+  "Collaboration": {
+    "description": "Coach Junhyun Jeon is an ambassador for MEDALIST KR. Together, we introduce a caffeine-free recovery energy routine for restoring your condition after HYROX training.",
+    "visit": "Visit MEDALIST KR"
+  },
+  "Coach": {
+    "title": "A current athlete who has faced failure\nknows exactly how to teach you.",
+    "bio": "The HYROX pacing built through countless trials and errors,\ndelivered directly to your training.",
+    "role": "AMOR LAB - Head Coach",
+    "competencies": "Core strengths",
+    "certifications": "Certifications"
+  }
+}

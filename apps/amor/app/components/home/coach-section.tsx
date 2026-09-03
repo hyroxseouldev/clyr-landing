@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import {
   CoachTabId,
   coachCareerItems,
@@ -12,6 +13,59 @@ import {
   coachTabs,
 } from "@/data/coach";
 
+const englishCareerItems = [
+  { period: "2012 - 2016", title: "Korea National Sport University", description: "Major in skating and coaching · Top admission, honors graduate" },
+  { period: "2016 - 2026", title: "Republic of Korea Special Warfare Command", description: "Captain · Completed specialized training", details: ["UN Peacekeeping Force in Lebanon (Dongmyeong Unit, Aug 2020 - May 2021)"] },
+  { period: "U-18", title: "Gwangyang Jecheol High School Football Team", description: "Elite athlete" },
+  { period: "2013 - 2015", title: "Personal Trainer", description: "Program design based on movement patterns and body structure analysis, with performance and physique training" },
+  { period: "2013 - 2015", title: "Spinning Instructor", description: "Led immersive group classes for dozens of participants using energy and music" },
+  { period: "2025 - 2026", title: "Running Performance Coach", description: "Comfort 'Wild Horse' sessions · Running and lower-body strength coach", details: ["Comfort 'Strong Heart' half-marathon prep class A · Coach and pacer"] },
+] as const;
+
+const englishCoachResults = [
+  { title: "2026", items: [
+    { rank: "🥇 1st", event: "Bangkok HYROX MEN (58:28)", year: "2026.08.13" },
+    { rank: "🥇 1st", event: "Chiba HYROX MEN (1:00:20)", year: "2026.08.06" },
+    { rank: "🥇 1st", event: "Incheon HYROX DOUBLES MEN (with Seunghyun Noh, 52:34)", year: "2026.05.15" },
+    { rank: "🥇 1st", event: "Korea Incheon HYROX Open Doubles", year: "2026" },
+    { rank: "🥇 1st", event: "Japan Osaka HYROX Pro Doubles", year: "2026" },
+    { rank: "🥉 3rd", event: "Taiwan HYROX Open Singles", year: "2026" },
+    { rank: "🥉 3rd", event: "China Beijing HYROX Open Singles [Sub-1]", year: "2026" },
+    { rank: "🏅 4th", event: "China Beijing HYROX Pro Singles", year: "2026" },
+  ] },
+  { title: "2025", items: [
+    { rank: "🥇 1st", event: "China Shenzhen HYROX Open Singles [Sub-1]", year: "2025" },
+    { rank: "🥇 1st", event: "China Shenzhen HYROX Pro Doubles", year: "2025" },
+    { rank: "🥇 1st", event: "China Shanghai HYROX Open Singles", year: "2025" },
+    { rank: "🥇 1st", event: "Hong Kong HYROX Open Singles", year: "2025" },
+    { rank: "🥇 1st", event: "Korea Incheon HYROX Men Relay", year: "2025" },
+    { rank: "🥈 2nd", event: "China Shanghai HYROX Open Doubles", year: "2025" },
+    { rank: "🥈 2nd", event: "Korea Seoul HYROX Open Singles", year: "2025" },
+    { rank: "🥈 2nd", event: "Korea Seoul HYROX Open Doubles", year: "2025" },
+    { rank: "🥈 2nd", event: "Korea Seoul HYROX Men Relay", year: "2025" },
+    { rank: "🥉 3rd", event: "Korea Incheon HYROX Open Doubles", year: "2025" },
+    { rank: "🏅 4th", event: "China Shanghai HYROX Men Relay", year: "2025" },
+  ] },
+  { title: "Fitness competitions", items: [
+    { rank: "🥈 2nd", event: "NPCA Goyang Sports Model" },
+    { rank: "🥈 2nd", event: "NPCA Yongin Sports Model" },
+    { rank: "🥈 2nd", event: "NABBA Sports Model" },
+  ] },
+] as const;
+
+const englishCoachRecords = [
+  { title: "HYROX Performance", columns: "grid-cols-2 sm:grid-cols-4", items: [
+    { category: "Open Single", value: "58:28", label: "SUB-1" }, { category: "Pro Single", value: "1:05:25" }, { category: "Open Double", value: "52:34" }, { category: "Pro Double", value: "56:19" },
+  ] },
+  { title: "HYROX Korea official P'F&T fitness test", columns: "grid-cols-1", items: [{ category: "Korea ranking", value: "#1", label: "16:41" }] },
+  { title: "Running Performance", columns: "grid-cols-3", items: [
+    { category: "3km", value: "9:53" }, { category: "5km", value: "16:55" }, { category: "10km", value: "35:30" },
+  ] },
+] as const;
+
+const englishCoachCompetencies = ["HYROX-specific running coaching", "Station-linked running strategy design", "Hybrid performance coaching", "HYROX race strategy design", "Integrated running and stretching programming", "Performance-based fitness improvement system", "Personalized coaching from beginners to athletes", "Sustainable fitness and performance planning", "Race feedback based on real competition experience", "Recovery, nutrition, and conditioning guidance"] as const;
+const englishCoachCertifications = ["Sports Massage Therapist", "Body Shape Management", "Level 2 Sports Instructor (Soccer)", "Level 2 Sports Instructor (Badminton)", "Recreation Instructor", "Special Combat Martial Arts 2nd Dan", "Judo 1st Dan", "Taekwondo 1st Dan"] as const;
+
 function PanelShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="motion-safe:animate-[fade-up_0.3s_ease-out_both] mt-5">
@@ -21,10 +75,13 @@ function PanelShell({ children }: { children: React.ReactNode }) {
 }
 
 function CareerPanel() {
+  const locale = useLocale();
+  const items = locale === "en" ? englishCareerItems : coachCareerItems;
+
   return (
     <PanelShell>
       <div className="grid gap-4 sm:grid-cols-2">
-        {coachCareerItems.map((item) => (
+        {items.map((item) => (
           <div
             key={`${item.period}-${item.title}`}
             className="rounded-xl border border-white/5 bg-white/5 p-5 transition hover:border-primary/15"
@@ -54,10 +111,13 @@ function CareerPanel() {
 }
 
 function ResultsPanel() {
+  const locale = useLocale();
+  const results = locale === "en" ? englishCoachResults : coachResults;
+
   return (
     <PanelShell>
       <div className="space-y-5">
-        {coachResults.map((group) => (
+        {results.map((group) => (
           <section key={group.title}>
             <h3 className="mb-2 text-base font-bold text-primary">
               {group.title}
@@ -88,10 +148,13 @@ function ResultsPanel() {
 }
 
 function RecordsPanel() {
+  const locale = useLocale();
+  const records = locale === "en" ? englishCoachRecords : coachRecords;
+
   return (
     <PanelShell>
       <div className="space-y-5">
-        {coachRecords.map((group) => (
+        {records.map((group) => (
           <section key={group.title}>
             <h4 className="mb-2.5 text-sm font-bold text-primary">
               {group.title}
@@ -150,11 +213,20 @@ function ListPanel({
 }
 
 function CertsPanel() {
+  const locale = useLocale();
+  const t = useTranslations("Coach");
+
   return (
     <PanelShell>
       <div className="grid gap-5 sm:grid-cols-2">
-        <ListPanel title="핵심 역량" items={coachCompetencies} />
-        <ListPanel title="자격 사항" items={coachCertifications} />
+        <ListPanel
+          title={t("competencies")}
+          items={locale === "en" ? englishCoachCompetencies : coachCompetencies}
+        />
+        <ListPanel
+          title={t("certifications")}
+          items={locale === "en" ? englishCoachCertifications : coachCertifications}
+        />
       </div>
     </PanelShell>
   );
@@ -169,6 +241,15 @@ function ActivePanel({ activeTab }: { activeTab: CoachTabId }) {
 
 export default function CoachSection() {
   const [activeTab, setActiveTab] = useState<CoachTabId>("career");
+  const t = useTranslations("Coach");
+  const locale = useLocale();
+
+  const tabs = locale === "en"
+    ? coachTabs.map((tab, index) => ({
+        ...tab,
+        label: ["Career", "Race results", "Performance", "Credentials"][index],
+      }))
+    : coachTabs;
 
   return (
     <section className="bg-[#080808] py-16 md:py-24" id="coach">
@@ -178,9 +259,7 @@ export default function CoachSection() {
             Authority
           </span>
           <h2 className="mt-2 text-3xl font-extrabold leading-[1.15] md:text-4xl lg:text-[46px]">
-            실패를 겪어본 현역 선수가
-            <br />
-            가장 정확하게 가르칩니다.
+            <span className="whitespace-pre-line">{t("title")}</span>
           </h2>
         </div>
 
@@ -189,14 +268,14 @@ export default function CoachSection() {
             <div className="relative aspect-square w-full overflow-hidden rounded-2xl border border-white/5 bg-[#111]">
               <Image
                 src="/assets/coach_profile.webp"
-                alt="전준현 코치"
+                alt={locale === "en" ? "Junhyun Jeon, HYROX coach" : "전준현 코치"}
                 fill
                 className="object-cover"
                 loading="lazy"
                 sizes="(max-width: 640px) 100vw, 50vw"
               />
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/85 to-transparent p-5 text-center">
-                <div className="text-xl font-extrabold">전준현</div>
+                <div className="text-xl font-extrabold">{locale === "en" ? "Junhyun Jeon" : "전준현"}</div>
                 <div className="text-xs font-semibold text-primary">
                   HYROX ELITE PERFORMANCE COACH
                 </div>
@@ -206,30 +285,29 @@ export default function CoachSection() {
 
           <div>
             <p className="text-[15px] text-gray-400 md:text-base">
-              수많은 시행착오 끝에 찾아낸 하이록스 최적의 훈련 템포를
-              <br />
-              여러분께 그대로 이식해 드립니다.
+              <span className="whitespace-pre-line">{t("bio")}</span>
             </p>
 
             <div className="mt-3">
               <span className="text-2xl font-extrabold">
-                전준현{" "}
+                {locale === "en" ? "Junhyun Jeon" : "전준현"}{" "}
                 <small className="text-sm font-medium text-gray-500">
                   | AMOR
                 </small>
               </span>
               <div className="text-xs font-semibold uppercase tracking-wider text-primary">
-                AMOR LAB - 대표 코치
+                {t("role")}
               </div>
             </div>
 
             <div className="mt-4 rounded-xl border-l-4 border-primary bg-white/5 p-4">
               <p className="text-[14px] italic text-gray-300 md:text-[15px]">
-                수많은 시행착오 끝에 찾아낸 하이록스 최적의 훈련 템포를 여러분께
-                그대로 이식해 드립니다.
+                {locale === "en"
+                  ? "The HYROX pacing built through countless trials and errors, delivered directly to your training."
+                  : "수많은 시행착오 끝에 찾아낸 하이록스 최적의 훈련 템포를 여러분께 그대로 이식해 드립니다."}
               </p>
               <span className="mt-1.5 block text-xs font-semibold text-primary not-italic">
-                - 전준현, AMOR LAB 대표 코치
+                - {locale === "en" ? "Junhyun Jeon, AMOR LAB Head Coach" : "전준현, AMOR LAB 대표 코치"}
               </span>
             </div>
           </div>
@@ -237,7 +315,7 @@ export default function CoachSection() {
 
         <div className="mt-12">
           <div className="tabs tabs-boxed gap-3 bg-transparent p-0">
-            {coachTabs.map((tab) => (
+            {tabs.map((tab) => (
               <button
                 key={tab.id}
                 type="button"

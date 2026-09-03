@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import React from "react";
+import { useTranslations } from "next-intl";
 
 const FloatingCTA = () => {
+  const t = useTranslations("Common");
   return (
     <>
       <Link
@@ -11,7 +13,7 @@ const FloatingCTA = () => {
         target="_blank"
         rel="noopener noreferrer"
         className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 rounded-2xl bg-gradient-to-br from-primary to-[#b8e63b] px-4 py-3.5 text-sm font-extrabold text-black shadow-[0_8px_32px_rgba(198,255,51,0.35)] transition-all duration-300 hover:-translate-y-1.5 hover:scale-105 hover:shadow-[0_16px_48px_rgba(198,255,51,0.5)] active:scale-95 sm:px-6 sm:py-4 sm:text-base"
-        aria-label="인스타그램에서 AMOR LAB 상담하기"
+        aria-label={t("consult")}
       >
         <svg
           className="h-5 w-5 flex-shrink-0 sm:h-6 sm:w-6"
@@ -27,7 +29,7 @@ const FloatingCTA = () => {
           <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
         </svg>
 
-        <span className="text-center leading-tight">상담하기</span>
+        <span className="text-center leading-tight">{t("consult")}</span>
       </Link>
     </>
   );

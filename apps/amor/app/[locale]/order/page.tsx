@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { useLocale, useTranslations } from "next-intl";
 import { sortedPrograms } from "@/data/program-catalog";
 import type { Program } from "@/data/programs";
 import { assertPublicSupabaseEnv, supabaseUrl, tenantId } from "@/env";
@@ -56,22 +57,22 @@ const bankAccount = {
   holderName: "전준현",
 };
 
-const priceFormatter = new Intl.NumberFormat("ko-KR", {
-  style: "currency",
-  currency: "KRW",
-  maximumFractionDigits: 0,
-});
+const formatPrice = (value: number, locale: string) =>
+  new Intl.NumberFormat(locale === "en" ? "en-US" : "ko-KR", {
+    style: "currency",
+    currency: "KRW",
+    maximumFractionDigits: 0,
+  }).format(value || 0);
 
-const formatPrice = (value: number) => priceFormatter.format(value || 0);
+const englishProgramCopy: Record<string, { title: string; description: string }> = {
+  "06a42964-2aa4-4287-a724-32fb8526e2df": { title: "Fundamentals: 4 weeks", description: "A foundational running and station-integrated class. Includes one in-person meeting and lesson in the final week." },
+  "0d925d9f-bdb1-4e34-ae70-5609faa20983": { title: "Race preparation", description: "A four-week class with four running and station sessions each week, plus two in-person training sessions and meetings." },
+  "8f81d9f1-8559-4fd8-bbe9-c49779770461": { title: "Running class", description: "A four-week class with three or four sessions each week, adjusted to your running level and training intensity." },
+  "c881344f-267c-4aa4-ad49-008e4275ec1f": { title: "HYROX stations", description: "A four-week class with three sessions each week, using station-specific training to strengthen your weaker areas." },
+};
 
-const difficultyLabel = (difficulty?: Program["difficulty"]) =>
-  ({
-    beginner: "입문",
-    intermediate: "중급",
-    advanced: "상급",
-  })[difficulty || ""] ||
-  difficulty ||
-  "-";
+const localizeProgram = (program: Program, locale: string) =>
+  locale === "en" ? { ...program, ...englishProgramCopy[program.id] } : program;
 
 const enabledDurations = (program: Program) => {
   const pricing = getProgramPricing(program.id);
@@ -97,6 +98,8 @@ const displayValue = (value?: string | number) => {
 };
 
 export default function OrderPageClient() {
+  const locale = useLocale();
+  const t = useTranslations("Order");
   const [selectedProgram, setSelectedProgram] = useState<Program | null>(null);
   const [selectedDuration, setSelectedDuration] = useState<Duration | null>(
     null,
@@ -127,7 +130,7 @@ export default function OrderPageClient() {
     const duration = selectedDuration;
 
     if (!program || !duration) {
-      alert("프로그램 정보를 확인할 수 없습니다. 다시 시도해 주세요.");
+      alert(t("programUnavailable"));
       return;
     }
 
@@ -140,7 +143,7 @@ export default function OrderPageClient() {
 
       const orderPayload: OrderPayload = {
         programId: program.id,
-        programName: program.title,
+        programName: localizeProgram(program, locale).title,
         storeName: "AMOR LAB 랜딩",
         buyerEmail: formData.get("buyerEmail") as string,
         buyerGoal: formData.get("goal") as string,
@@ -175,20 +178,20 @@ export default function OrderPageClient() {
       const result = (await response.json().catch(() => ({}))) as OrderResponse;
       if (!response.ok || !result.ok) {
         throw new Error(
-          result.error || result.message || "주문 생성에 실패했습니다.",
+          result.error || result.message || t("createFailed"),
         );
       }
 
       alert(
-        `주문이 완료되었습니다.\n입금 계좌: ${bankAccount.bankName} ${bankAccount.accountNumber}\n예금주: ${bankAccount.holderName}`,
+        t("completedAlert", bankAccount),
       );
-      window.location.href = "/";
+      window.location.href = `/${locale}`;
     } catch (error) {
       const errorMessage =
         error instanceof Error
           ? error.message
-          : "알 수 없는 오류가 발생했습니다.";
-      alert(`주문 처리 중 오류가 발생했습니다.\n${errorMessage}`);
+          : t("unknownError");
+      alert(`${t("error")}\n${errorMessage}`);
     } finally {
       setIsLoading(false);
     }
@@ -233,8 +236,16 @@ export default function OrderPageClient() {
   }
 
   const durations = enabledDurations(selectedProgram);
-  const summaryProgram = selectedProgram;
+  const summaryProgram = localizeProgram(selectedProgram, locale);
   const summaryDuration = selectedDuration;
+  const difficultyLabel = (difficulty?: Program["difficulty"]) => {
+    const labels = {
+      beginner: t("difficultyBeginner"),
+      intermediate: t("difficultyIntermediate"),
+      advanced: t("difficultyAdvanced"),
+    };
+    return labels[difficulty || ""] || difficulty || "-";
+  };
 
   return (
     <div className="min-h-screen bg-base-100 text-base-content">
@@ -245,11 +256,10 @@ export default function OrderPageClient() {
             <span className="text-primary text-xs font-bold tracking-[0.2em] uppercase">
               Program Order
             </span>
-            <h1 className="text-3xl md:text-4xl font-bold">프로그램 주문</h1>
+            <h1 className="text-3xl md:text-4xl font-bold">{t("title")}</h1>
           </div>
           <p className="text-sm text-base-content/60 max-w-md">
-            선택한 코칭 프로그램 정보를 확인하고 주문자 정보와 결제 방법을
-            입력해 주세요.
+            {t("description")}
           </p>
         </div>
 
@@ -262,14 +272,14 @@ export default function OrderPageClient() {
             {/* Program Selection */}
             <div className="card bg-base-200 shadow-xl border border-base-300">
               <div className="card-body">
-                <h2 className="card-title text-lg">프로그램 정보</h2>
+                <h2 className="card-title text-lg">{t("programInfo")}</h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <figure className="aspect-square rounded-xl overflow-hidden bg-base-300 relative">
                       <Image
                         src={selectedProgram.thumbnail_url}
-                        alt={selectedProgram.title}
+                        alt={summaryProgram.title}
                         fill
                         className="object-cover"
                         sizes="(max-width: 768px) 100vw, 50vw"
@@ -282,7 +292,7 @@ export default function OrderPageClient() {
                     <div className="form-control">
                       <label className="label pb-2">
                         <span className="label-text font-semibold">
-                          프로그램 선택
+                          {t("programSelect")}
                         </span>
                       </label>
                       <select
@@ -292,7 +302,7 @@ export default function OrderPageClient() {
                       >
                         {sortedPrograms.map((p) => (
                           <option key={p.id} value={p.id}>
-                            {p.title}
+                            {localizeProgram(p, locale).title}
                           </option>
                         ))}
                       </select>
@@ -300,10 +310,10 @@ export default function OrderPageClient() {
 
                     <div>
                       <h3 className="text-primary font-bold text-sm tracking-wide uppercase">
-                        {selectedProgram.title}
+                        {summaryProgram.title}
                       </h3>
                       <p className="text-sm text-base-content/70 mt-1 whitespace-pre-line">
-                        {selectedProgram.description}
+                        {summaryProgram.description}
                       </p>
                     </div>
 
@@ -311,7 +321,7 @@ export default function OrderPageClient() {
                     <div className="form-control">
                       <label className="label pb-2">
                         <span className="label-text font-semibold">
-                          수강 기간
+                          {t("duration")}
                         </span>
                       </label>
                       <select
@@ -327,7 +337,7 @@ export default function OrderPageClient() {
                       >
                         {durations.map((d, idx) => (
                           <option key={idx} value={idx}>
-                            {d.duration_months}개월 · {formatPrice(d.price_krw)}
+                            {t("months", { count: d.duration_months })} · {formatPrice(d.price_krw, locale)}
                           </option>
                         ))}
                       </select>
@@ -337,7 +347,7 @@ export default function OrderPageClient() {
                     <div className="grid grid-cols-3 gap-2">
                       <div className="bg-base-300/30 rounded-xl p-3 text-center">
                         <div className="text-xs text-base-content/50 font-semibold">
-                          난이도
+                          {t("difficulty")}
                         </div>
                         <div className="text-sm font-bold">
                           {difficultyLabel(selectedProgram.difficulty)}
@@ -345,19 +355,18 @@ export default function OrderPageClient() {
                       </div>
                       <div className="bg-base-300/30 rounded-xl p-3 text-center">
                         <div className="text-xs text-base-content/50 font-semibold">
-                          주간 훈련
+                          {t("weeklyTraining")}
                         </div>
                         <div className="text-sm font-bold">
-                          주 {displayValue(selectedProgram.days_per_week)}회
+                          {t("weeklyValue", { count: displayValue(selectedProgram.days_per_week) })}
                         </div>
                       </div>
                       <div className="bg-base-300/30 rounded-xl p-3 text-center">
                         <div className="text-xs text-base-content/50 font-semibold">
-                          일일 시간
+                          {t("dailyDuration")}
                         </div>
                         <div className="text-sm font-bold">
-                          {displayValue(selectedProgram.daily_workout_minutes)}
-                          분
+                          {t("minutes", { count: displayValue(selectedProgram.daily_workout_minutes) })}
                         </div>
                       </div>
                     </div>
@@ -369,19 +378,19 @@ export default function OrderPageClient() {
             {/* Buyer Information */}
             <div className="card bg-base-200 shadow-xl border border-base-300">
               <div className="card-body">
-                <h2 className="card-title text-lg">주문자 정보</h2>
+                <h2 className="card-title text-lg">{t("buyerInfo")}</h2>
 
                 <div className="space-y-5">
                   <div className="form-control">
                     <label className="label pb-2">
-                      <span className="label-text font-semibold">이름</span>
+                        <span className="label-text font-semibold">{t("buyerName")}</span>
                     </label>
                     <input
                       type="text"
                       id="buyerName"
                       name="buyerName"
                       className="input input-bordered w-full"
-                      placeholder="홍길동"
+                      placeholder={t("namePlaceholder")}
                       required
                       autoComplete="name"
                     />
@@ -389,7 +398,7 @@ export default function OrderPageClient() {
 
                   <div className="form-control">
                     <label className="label pb-2">
-                      <span className="label-text font-semibold">연락처</span>
+                        <span className="label-text font-semibold">{t("buyerPhone")}</span>
                     </label>
                     <input
                       type="tel"
@@ -404,7 +413,7 @@ export default function OrderPageClient() {
 
                   <div className="form-control">
                     <label className="label pb-2">
-                      <span className="label-text font-semibold">이메일</span>
+                        <span className="label-text font-semibold">{t("email")}</span>
                     </label>
                     <input
                       type="email"
@@ -420,14 +429,14 @@ export default function OrderPageClient() {
                   <div className="form-control">
                     <label className="label pb-2">
                       <span className="label-text font-semibold">
-                        목표 및 참고 사항
+                          {t("goal")}
                       </span>
                     </label>
                     <textarea
                       id="goal"
                       name="goal"
                       className="textarea textarea-bordered w-full min-h-[100px]"
-                      placeholder="현재 기록, 목표 대회, 개선하고 싶은 부분을 적어주세요."
+                      placeholder={t("goalPlaceholder")}
                     ></textarea>
                   </div>
                 </div>
@@ -437,7 +446,7 @@ export default function OrderPageClient() {
             {/* Payment Method */}
             <div className="card bg-base-200 shadow-xl border border-base-300">
               <div className="card-body">
-                <h2 className="card-title text-lg">결제 방법</h2>
+                <h2 className="card-title text-lg">{t("paymentMethod")}</h2>
 
                 <div className="space-y-3">
                   <label className="flex items-center gap-4 p-4 border border-base-300 rounded-xl bg-base-300/20 hover:bg-base-300/30 transition cursor-pointer">
@@ -449,9 +458,9 @@ export default function OrderPageClient() {
                       className="radio radio-primary"
                     />
                     <div>
-                      <div className="font-bold">신용/체크카드</div>
+                      <div className="font-bold">{t("card")}</div>
                       <div className="text-xs text-base-content/50">
-                        카드 결제 연동 예정
+                        {t("cardComingSoon")}
                       </div>
                     </div>
                   </label>
@@ -465,9 +474,9 @@ export default function OrderPageClient() {
                       className="radio radio-primary"
                     />
                     <div>
-                      <div className="font-bold">카카오페이</div>
+                      <div className="font-bold">{t("kakaoPay")}</div>
                       <div className="text-xs text-base-content/50">
-                        간편 결제 연동 예정
+                        {t("kakaoPayComingSoon")}
                       </div>
                     </div>
                   </label>
@@ -481,22 +490,22 @@ export default function OrderPageClient() {
                       className="radio radio-primary"
                     />
                     <div>
-                      <div className="font-bold">무통장 입금</div>
+                      <div className="font-bold">{t("bankTransfer")}</div>
                       <div className="text-xs text-base-content/50">
-                        국민은행 824001-04-091290 · 전준현
+                      {bankAccount.bankName} {bankAccount.accountNumber} · {bankAccount.holderName}
                       </div>
                     </div>
                   </label>
 
                   <div className="bg-primary/10 border border-primary/20 rounded-xl p-4">
                     <div className="text-xs font-bold text-primary/70">
-                      입금 계좌
+                      {t("account")}
                     </div>
                     <div className="font-bold text-base">
-                      국민은행 824001-04-091290
+                      {bankAccount.bankName} {bankAccount.accountNumber}
                     </div>
                     <div className="text-xs text-base-content/50">
-                      예금주 전준현
+                      {t("accountHolder", { name: bankAccount.holderName })}
                     </div>
                   </div>
                 </div>
@@ -508,7 +517,7 @@ export default function OrderPageClient() {
           <div className="lg:col-span-1">
             <div className="card bg-base-200 shadow-xl border border-base-300 sticky top-24">
               <div className="card-body">
-                <h2 className="card-title text-lg">주문 요약</h2>
+                <h2 className="card-title text-lg">{t("summary")}</h2>
 
                 <div className="space-y-2 text-sm">
                   <div className="text-primary font-bold tracking-wide uppercase">
@@ -523,21 +532,21 @@ export default function OrderPageClient() {
 
                 <div className="space-y-3">
                   <div className="flex justify-between">
-                    <span className="text-base-content/60">수강 기간</span>
+                    <span className="text-base-content/60">{t("duration")}</span>
                     <span className="font-bold">
-                      {summaryDuration.duration_months}개월
+                      {t("months", { count: summaryDuration.duration_months })}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-base-content/60">담당 코치</span>
+                    <span className="text-base-content/60">{t("coach")}</span>
                     <span className="font-bold">
-                      {summaryProgram.coach_name || "전준현"}
+                      {locale === "en" ? "Junhyun Jeon" : summaryProgram.coach_name || "전준현"}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-base-content/60">입금 계좌</span>
+                    <span className="text-base-content/60">{t("account")}</span>
                     <span className="font-bold text-xs">
-                      국민 824001-04-091290
+                      {bankAccount.bankName} {bankAccount.accountNumber}
                     </span>
                   </div>
                 </div>
@@ -545,9 +554,9 @@ export default function OrderPageClient() {
                 <div className="divider"></div>
 
                 <div className="flex justify-between items-center">
-                  <span className="text-base-content/60">결제 금액</span>
+                  <span className="text-base-content/60">{t("paymentAmount")}</span>
                   <span className="text-3xl font-bold text-primary">
-                    {formatPrice(summaryDuration.price_krw)}
+                    {formatPrice(summaryDuration.price_krw, locale)}
                   </span>
                 </div>
 
@@ -559,7 +568,7 @@ export default function OrderPageClient() {
                       required
                     />
                     <span className="label-text text-xs">
-                      주문 정보와 결제 진행 안내를 확인했습니다.
+                      {t("agreement")}
                     </span>
                   </label>
                 </div>
@@ -572,10 +581,10 @@ export default function OrderPageClient() {
                   {isLoading ? (
                     <>
                       <span className="loading loading-spinner"></span>
-                      주문 처리 중...
+                      {t("processing")}
                     </>
                   ) : (
-                    "주문하기"
+                    t("submit")
                   )}
                 </button>
               </div>

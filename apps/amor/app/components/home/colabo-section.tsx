@@ -1,7 +1,9 @@
 import React from "react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 const ColaboSection = () => {
+  const t = useTranslations("Collaboration");
   return (
     <section
       className="border-y border-white/5 bg-base-100 py-16 md:py-24"
@@ -14,7 +16,7 @@ const ColaboSection = () => {
             <div className="mb-4 max-w-[200px] md:max-w-[240px] relative">
               <Image
                 src="/assets/medalist-logo.png"
-                alt="MEDALIST KR 로고"
+                alt="MEDALIST KR logo"
                 width={240}
                 height={80}
                 className="w-full h-auto"
@@ -40,9 +42,7 @@ const ColaboSection = () => {
 
             {/* 설명 */}
             <p className="mx-auto mt-3 max-w-2xl text-[15px] text-gray-300 leading-relaxed">
-              전준현 코치는 MEDALIST KR 앰버서더로 함께합니다. 하이록스 훈련 후
-              무너진 컨디션을 다시 끌어올리는 무카페인 회복 에너지 루틴을 AMOR
-              LAB의 훈련 철학과 함께 소개합니다.
+              {t("description")}
             </p>
 
             {/* 버튼 */}
@@ -53,7 +53,7 @@ const ColaboSection = () => {
                 rel="noopener noreferrer"
                 className="btn btn-outline btn-primary gap-2 px-8 py-3 normal-case text-sm font-semibold"
               >
-                MEDALIST KR 방문하기
+                {t("visit")}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-4 w-4"

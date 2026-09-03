@@ -1,0 +1,149 @@
+{
+  "Common": {
+    "home": "AMOR LAB 홈",
+    "coach": "코치 소개",
+    "programs": "프로그램",
+    "reviews": "후기",
+    "faq": "FAQ",
+    "lookup": "주문 확인",
+    "order": "주문하기",
+    "consult": "상담하기",
+    "korean": "한국어",
+    "english": "English"
+  },
+  "Home": {
+    "eyebrow": "HYROX ONLINE COACHING",
+    "title": "더 빠르게, 더 강하게.\n당신의 HYROX를 설계합니다.",
+    "description": "데이터 기반의 1:1 맞춤 코칭으로\n첫 대회부터 기록 단축까지 함께합니다.",
+    "viewPrograms": "프로그램 보기",
+    "viewReviews": "실제 후기 보기",
+    "stats": {
+      "experience": "코칭 경력",
+      "record": "HYROX 기록",
+      "improvement": "평균 기록 단축"
+    }
+  },
+  "Order": {
+    "title": "프로그램 주문",
+    "description": "선택한 코칭 프로그램 정보를 확인하고 주문자 정보와 결제 방법을 입력해 주세요.",
+    "programInfo": "프로그램 정보",
+    "programSelect": "프로그램 선택",
+    "duration": "수강 기간",
+    "difficulty": "난이도",
+    "weeklyTraining": "주간 훈련",
+    "dailyDuration": "일일 시간",
+    "buyerInfo": "주문자 정보",
+    "buyerName": "이름",
+    "buyerPhone": "휴대폰 번호",
+    "email": "이메일",
+    "goal": "목표 및 참고 사항",
+    "goalPlaceholder": "현재 기록, 목표 대회, 개선하고 싶은 부분을 적어주세요.",
+    "paymentMethod": "결제 방법",
+    "card": "신용/체크카드",
+    "cardComingSoon": "카드 결제 연동 예정",
+    "kakaoPay": "카카오페이",
+    "kakaoPayComingSoon": "간편 결제 연동 예정",
+    "bankTransfer": "무통장 입금",
+    "account": "입금 계좌",
+    "accountHolder": "예금주 {name}",
+    "summary": "주문 요약",
+    "coach": "담당 코치",
+    "paymentAmount": "결제 금액",
+    "agreement": "주문 정보와 결제 진행 안내를 확인했습니다.",
+    "months": "{count}개월",
+    "weeklyValue": "주 {count}회",
+    "minutes": "{count}분",
+    "difficultyBeginner": "입문",
+    "difficultyIntermediate": "중급",
+    "difficultyAdvanced": "상급",
+    "namePlaceholder": "홍길동",
+    "programUnavailable": "프로그램 정보를 확인할 수 없습니다. 다시 시도해 주세요.",
+    "createFailed": "주문 생성에 실패했습니다.",
+    "unknownError": "알 수 없는 오류가 발생했습니다.",
+    "processing": "주문 처리 중...",
+    "completedAlert": "주문이 완료되었습니다.\n입금 계좌: {bankName} {accountNumber}\n예금주: {holderName}",
+    "submit": "주문 접수",
+    "success": "주문이 완료되었습니다.",
+    "error": "주문 처리 중 오류가 발생했습니다."
+  },
+  "Lookup": {
+    "title": "주문 확인",
+    "description": "주문할 때 입력한 이름과 연락처로 신청 내역을 확인할 수 있습니다.",
+    "buyerName": "이름",
+    "buyerPhone": "휴대폰 번호",
+    "namePlaceholder": "홍길동",
+    "submit": "주문 조회",
+    "loading": "조회 중...",
+    "initialMessage": "주문자 이름과 핸드폰 번호를 입력한 뒤 조회해 주세요.",
+    "missingFields": "이름과 핸드폰 번호를 모두 입력해 주세요.",
+    "searching": "주문 내역을 조회하고 있습니다.",
+    "notFound": "일치하는 주문 내역이 없습니다. 이름과 핸드폰 번호를 다시 확인해 주세요.",
+    "found": "{count}개의 주문 내역을 찾았습니다.",
+    "lookupFailed": "주문 조회에 실패했습니다.",
+    "unknownError": "알 수 없는 오류가 발생했습니다.",
+    "lookupError": "주문 조회 중 오류가 발생했습니다. {errorMessage}",
+    "defaultProgram": "AMOR 프로그램",
+    "orderNumber": "주문번호 {id}",
+    "paymentAmount": "결제 금액",
+    "duration": "수강 기간",
+    "months": "{count}개월",
+    "orderedAt": "주문 일시",
+    "pending": "입금 확인 대기",
+    "confirmed": "확인 완료",
+    "canceled": "취소됨",
+    "checkingStatus": "상태 확인 중"
+  },
+  "Footer": {
+    "eyebrow": "FINALLY",
+    "title": "더 나은 기록,\n더 강력해진 나를 만날 시간.",
+    "description": "지금 바로 AMOR LAB 크루에 합류하고\n당신의 하이록스 기록을 새로 쓰세요.",
+    "join": "지금 AMOR LAB 크루 합류하기 →",
+    "lookup": "주문 확인하기",
+    "terms": "이용약관",
+    "privacy": "개인정보처리방침",
+    "business": "사업자 정보"
+  },
+  "Faq": {
+    "title": "자주 묻는 질문",
+    "description": "AMOR LAB에 대해 가장 많이 물어보시는 내용을 정리했습니다.",
+    "items": [
+      {"q": "Q. 하이록스 전용 장비가 없는 일반 헬스장에서도 가능한가요?", "a": "네, 일반 헬스장의 덤벨, 바벨, 트레드밀을 활용하여 하이록스에 필요한 기능을 극대화할 수 있는 대체 와드 프로그램을 구성해 드립니다."},
+      {"q": "Q. 완전 초보자도 따라갈 수 있나요?", "a": "물론입니다. 현재 체력 수준을 기준으로 부상 없이 기초부터 차근차근 빌드업할 수 있도록 조절해 드립니다."},
+      {"q": "Q. 피드백은 어떤 방식으로 진행되나요?", "a": "운동 후 느낌점을 업로드해 주시면 코치가 48시간 이내에 자세 교정 및 템포 조절 피드백을 제공합니다."}
+    ]
+  },
+  "Pricing": {
+    "eyebrow": "PROGRAM & PRICING",
+    "title": "당신의 목표에 맞는\n코칭 프로그램",
+    "description": "현재 수행 능력과 목표에 따라 맞춤 설계된 프로그램을 선택하세요.",
+    "customWod": "1:1 맞춤형 WOD",
+    "feedback": "실시간 소통 및 피드백",
+    "recommended": "🔥 추천",
+    "perMonth": "/ 1개월",
+    "apply": "지원하기 →"
+  },
+  "Problem": {
+    "eyebrow": "PROBLEM",
+    "title": "달리기만 잘한다고,\n힘만 세다고 해결되지 않습니다.",
+    "description": "하이록스는 단순한 체력 싸움이 아닌\n철저한 전환 전략과 페이스 분배의 과학입니다.",
+    "questions": ["러닝 후 기능성 운동으로 전환할 때 페이스가 무너지나요?", "나에게 맞는 체계적인 하이록스 전용 루틴을 몰라 헤매고 계시나요?", "대회 후반부, Wall Ball Shots에서 유독 기록이 지체되나요?"],
+    "insight": "💡 핵심 인사이트 — 하이록스는 단순한 체력 싸움이 아닌, 철저한 전환 전략과 페이스 분배의 과학입니다.",
+    "balance": "훈련 강도와 회복의 균형,\n그 critical point가 당신의 기록을 결정합니다."
+  },
+  "Social": {
+    "title": "이미 많은 멤버들이\n한계를 깨부수고 있습니다",
+    "description": "AMOR LAB과 함께 기록을 경신한 크루들의 생생한 후기입니다.",
+    "cta": "나도 기록 단축 도전하기 →"
+  },
+  "Collaboration": {
+    "description": "전준현 코치는 MEDALIST KR 앰버서더로 함께합니다. 하이록스 훈련 후 무너진 컨디션을 다시 끌어올리는 무카페인 회복 에너지 루틴을 AMOR LAB의 훈련 철학과 함께 소개합니다.",
+    "visit": "MEDALIST KR 방문하기"
+  },
+  "Coach": {
+    "title": "실패를 겪어본 현역 선수가\n가장 정확하게 가르칩니다.",
+    "bio": "수많은 시행착오 끝에 찾아낸 하이록스 최적의 훈련 템포를\n여러분께 그대로 이식해 드립니다.",
+    "role": "AMOR LAB - 대표 코치",
+    "competencies": "핵심 역량",
+    "certifications": "자격 사항"
+  }
+}

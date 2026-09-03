@@ -1,19 +1,25 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { ContainerWrapper } from "./container-wrapper";
 import { useState } from "react";
-
-const navItems = [
-  { label: "코치 소개", href: "/#coach" },
-  { label: "프로그램", href: "/#pricing" },
-  { label: "후기", href: "/#proof" },
-  { label: "FAQ", href: "/#faq" },
-];
+import { useTranslations } from "next-intl";
+import { useLocale } from "next-intl";
+import { usePathname, useRouter } from "@/i18n/navigation";
 
 export function SiteHeader() {
   const [isOpen, setIsOpen] = useState(false);
+  const t = useTranslations("Common");
+  const locale = useLocale();
+  const pathname = usePathname();
+  const router = useRouter();
+  const navItems = [
+    { label: t("coach"), href: "/#coach" },
+    { label: t("programs"), href: "/#pricing" },
+    { label: t("reviews"), href: "/#proof" },
+    { label: t("faq"), href: "/#faq" },
+  ];
 
   return (
     <header className="sticky top-0 z-50 border-b border-base-content/10 bg-base-100/85 backdrop-blur-xl">
@@ -22,7 +28,7 @@ export function SiteHeader() {
           <Link
             className="flex items-center transition-opacity hover:opacity-80"
             href="/"
-            aria-label="AMOR LAB 홈"
+            aria-label={t("home")}
           >
             <Image
               className="h-8 w-auto sm:h-9"
@@ -36,7 +42,7 @@ export function SiteHeader() {
         </div>
 
         {/* 데스크탑 메뉴 */}
-        <nav className="navbar-center hidden lg:flex" aria-label="주요 메뉴">
+        <nav className="navbar-center hidden lg:flex" aria-label={t("home")}>
           <div className="flex items-center gap-4">
             {navItems.map((item) => (
               <Link
@@ -52,12 +58,30 @@ export function SiteHeader() {
 
         {/* 우측 버튼 */}
         <div className="navbar-end gap-2 lg:gap-3">
+          <label className="hidden sm:block" aria-label="Language">
+            <select
+              className="select select-bordered select-sm w-28 border-base-content/20 bg-base-200 text-base-content"
+              value={locale}
+              onChange={(event) =>
+                router.replace(pathname, {
+                  locale: event.target.value as "ko" | "en",
+                })
+              }
+            >
+              <option className="bg-base-200 text-base-content" value="ko">
+                {t("korean")}
+              </option>
+              <option className="bg-base-200 text-base-content" value="en">
+                {t("english")}
+              </option>
+            </select>
+          </label>
           {/* 주문 확인 - 모바일에서 숨김 */}
           <Link
             className="btn btn-outline btn-md hidden border-base-content/25 text-base-content/80 sm:inline-flex px-5"
             href="/lookup"
           >
-            주문 확인
+            {t("lookup")}
           </Link>
 
           {/* 주문하기 - 모바일에서 숨김 (lg 이상에서만 노출) */}
@@ -65,14 +89,14 @@ export function SiteHeader() {
             className="btn btn-primary btn-md hidden px-6 font-black lg:inline-flex"
             href="/order"
           >
-            주문하기
+            {t("order")}
           </Link>
 
           {/* 햄버거 버튼 - 모바일 */}
           <button
             className="btn btn-ghost btn-square btn-md lg:hidden"
             onClick={() => setIsOpen(!isOpen)}
-            aria-label="메뉴 열기"
+            aria-label={t("home")}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -100,7 +124,7 @@ export function SiteHeader() {
       >
         <div className="border-t border-base-content/10 bg-base-100/95 backdrop-blur-xl">
           <ContainerWrapper className="py-4">
-            <nav className="flex flex-col gap-2" aria-label="모바일 메뉴">
+            <nav className="flex flex-col gap-2" aria-label={t("home")}>
               {navItems.map((item) => (
                 <Link
                   key={item.href}
@@ -119,14 +143,14 @@ export function SiteHeader() {
                   href="/lookup"
                   onClick={() => setIsOpen(false)}
                 >
-                  주문 확인
+                  {t("lookup")}
                 </Link>
                 <Link
                   className="btn btn-primary btn-md justify-start font-black"
                   href="/order"
                   onClick={() => setIsOpen(false)}
                 >
-                  주문하기
+                  {t("order")}
                 </Link>
               </div>
             </nav>

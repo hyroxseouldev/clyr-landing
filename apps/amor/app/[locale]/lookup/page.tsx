@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import { assertPublicSupabaseEnv, supabaseUrl, tenantId } from "@/env";
 
 type MessageType = "info" | "warning" | "error";
@@ -32,13 +33,15 @@ interface LookupResponse {
 }
 
 export default function LookUpPage() {
+  const locale = useLocale();
+  const t = useTranslations("Lookup");
   const [buyerName, setBuyerName] = useState("");
   const [buyerPhone, setBuyerPhone] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [orders, setOrders] = useState<GuestOrder[]>([]);
   const [message, setMessage] = useState<LookupMessage>({
     type: "info",
-    text: "주문자 이름과 핸드폰 번호를 입력한 뒤 조회해 주세요.",
+    text: t("initialMessage"),
   });
 
   useEffect(() => {
@@ -46,7 +49,7 @@ export default function LookUpPage() {
   }, []);
 
   const formatPrice = (value: number) =>
-    new Intl.NumberFormat("ko-KR", {
+    new Intl.NumberFormat(locale === "en" ? "en-US" : "ko-KR", {
       style: "currency",
       currency: "KRW",
       maximumFractionDigits: 0,
@@ -56,7 +59,7 @@ export default function LookUpPage() {
     if (!value) return "-";
     const date = new Date(value);
     if (Number.isNaN(date.getTime())) return "-";
-    return new Intl.DateTimeFormat("ko-KR", {
+    return new Intl.DateTimeFormat(locale === "en" ? "en-US" : "ko-KR", {
       year: "numeric",
       month: "2-digit",
       day: "2-digit",
@@ -67,16 +70,16 @@ export default function LookUpPage() {
 
   const statusMeta = (status?: GuestOrder["status"]) =>
     ({
-      pending: { label: "입금 확인 대기", className: "badge-warning" },
-      confirmed: { label: "확인 완료", className: "badge-success" },
-      canceled: { label: "취소됨", className: "badge-error" },
-    })[status] || { label: status || "상태 확인 중", className: "badge-ghost" };
+      pending: { label: t("pending"), className: "badge-warning" },
+      confirmed: { label: t("confirmed"), className: "badge-success" },
+      canceled: { label: t("canceled"), className: "badge-error" },
+    })[status] || { label: status || t("checkingStatus"), className: "badge-ghost" };
 
   const renderOrders = (ordersData: GuestOrder[]) => {
     if (!ordersData.length) {
       setMessage({
         type: "warning",
-        text: "일치하는 주문 내역이 없습니다. 이름과 핸드폰 번호를 다시 확인해 주세요.",
+        text: t("notFound"),
       });
       setOrders([]);
       return;
@@ -85,7 +88,7 @@ export default function LookUpPage() {
     setOrders(ordersData);
     setMessage({
       type: "info",
-      text: `${ordersData.length}개의 주문 내역을 찾았습니다.`,
+      text: t("found", { count: ordersData.length }),
     });
   };
 
@@ -95,13 +98,13 @@ export default function LookUpPage() {
     if (!buyerName.trim() || !buyerPhone.trim()) {
       setMessage({
         type: "error",
-        text: "이름과 핸드폰 번호를 모두 입력해 주세요.",
+        text: t("missingFields"),
       });
       return;
     }
 
     setIsLoading(true);
-    setMessage({ type: "info", text: "주문 내역을 조회하고 있습니다." });
+    setMessage({ type: "info", text: t("searching") });
     setOrders([]);
 
     try {
@@ -123,17 +126,17 @@ export default function LookUpPage() {
       const result = (await response.json().catch(() => ({}))) as LookupResponse;
       if (!response.ok || !result.ok) {
         throw new Error(
-          result.error || result.message || "주문 조회에 실패했습니다.",
+          result.error || result.message || t("lookupFailed"),
         );
       }
 
       renderOrders(result.orders || []);
     } catch (error) {
       const errorMessage =
-        error instanceof Error ? error.message : "알 수 없는 오류가 발생했습니다.";
+        error instanceof Error ? error.message : t("unknownError");
       setMessage({
         type: "error",
-        text: `주문 조회 중 오류가 발생했습니다. ${errorMessage}`,
+        text: t("lookupError", { errorMessage }),
       });
       setOrders([]);
     } finally {
@@ -152,11 +155,11 @@ export default function LookUpPage() {
                 Order Lookup
               </span>
               <h1 className="text-3xl sm:text-5xl font-black leading-tight">
-                주문 확인
+                {t("title")}
               </h1>
             </div>
             <p className="text-base-content/60 text-sm max-w-sm">
-              주문할 때 입력한 이름과 연락처로 신청 내역을 확인할 수 있습니다.
+              {t("description")}
             </p>
           </div>
 
@@ -166,11 +169,11 @@ export default function LookUpPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="form-control">
                   <label className="label">
-                    <span className="label-text font-bold">이름</span>
+                    <span className="label-text font-bold">{t("buyerName")}</span>
                   </label>
                   <input
                     type="text"
-                    placeholder="홍길동"
+                    placeholder={t("namePlaceholder")}
                     className="input input-bordered w-full focus:outline-none focus:ring-2 focus:ring-primary/20"
                     value={buyerName}
                     onChange={(e) => setBuyerName(e.target.value)}
@@ -179,7 +182,7 @@ export default function LookUpPage() {
                 </div>
                 <div className="form-control">
                   <label className="label">
-                    <span className="label-text font-bold">핸드폰 번호</span>
+                    <span className="label-text font-bold">{t("buyerPhone")}</span>
                   </label>
                   <input
                     type="tel"
@@ -200,10 +203,10 @@ export default function LookUpPage() {
                   {isLoading ? (
                     <>
                       <span className="loading loading-spinner loading-sm"></span>
-                      조회 중...
+                      {t("loading")}
                     </>
                   ) : (
-                    "조회하기"
+                    t("submit")
                   )}
                 </button>
               </div>
@@ -239,10 +242,10 @@ export default function LookUpPage() {
                           <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
                             <div>
                               <div className="text-primary font-black text-base sm:text-lg">
-                                {payload.programName || "AMOR 프로그램"}
+                                {payload.programName || t("defaultProgram")}
                               </div>
                               <div className="text-base-content/40 text-xs mt-1">
-                                주문번호 {order.id || "-"}
+                                {t("orderNumber", { id: order.id || "-" })}
                               </div>
                             </div>
                             <div
@@ -255,7 +258,7 @@ export default function LookUpPage() {
                           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                             <div className="bg-base-200 rounded-box p-3">
                               <div className="text-base-content/40 text-xs font-extrabold">
-                                결제 금액
+                                {t("paymentAmount")}
                               </div>
                               <div className="font-black text-sm">
                                 {formatPrice(totalPrice)}
@@ -263,15 +266,15 @@ export default function LookUpPage() {
                             </div>
                             <div className="bg-base-200 rounded-box p-3">
                               <div className="text-base-content/40 text-xs font-extrabold">
-                                수강 기간
+                                {t("duration")}
                               </div>
                               <div className="font-black text-sm">
-                                {payload.durationMonths || "-"}개월
+                                {payload.durationMonths ? t("months", { count: payload.durationMonths }) : "-"}
                               </div>
                             </div>
                             <div className="bg-base-200 rounded-box p-3">
                               <div className="text-base-content/40 text-xs font-extrabold">
-                                주문 일시
+                                {t("orderedAt")}
                               </div>
                               <div className="font-black text-sm">
                                 {formatDate(order.created_at)}
