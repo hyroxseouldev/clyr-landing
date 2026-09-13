@@ -1,4 +1,3 @@
-import { Badge } from "@/components/ui/badge";
 import React from "react";
 import { useLocale, useTranslations } from "next-intl";
 
@@ -66,68 +65,32 @@ const SocialProofSection = () => {
           ][index],
         }))
       : testimonials;
-  const allTestimonials = [...localizedTestimonials, ...localizedTestimonials];
 
   return (
-    <section className="overflow-hidden bg-[#080808] py-16 md:py-24" id="proof">
-      <div className="container mx-auto max-w-7xl px-6">
-        <div className="text-center">
-          <span className="inline-block text-[11px] font-semibold uppercase tracking-[3px] text-primary">
-            Testimonials
-          </span>
-          <h2 className="mt-2 text-3xl font-extrabold leading-[1.15] md:text-4xl lg:text-[46px]">
-            <span className="whitespace-pre-line">{t("title")}</span>
-          </h2>
-          <p className="mx-auto mt-3 max-w-md text-[15px] text-gray-400 md:text-base">
-            {t("description")}
-          </p>
-        </div>
+    <section className="editorial-section community-section" id="proof">
+      <div className="community-heading">
+        <span className="eyebrow">SMALL WINS. BIG CHANGES.</span>
+        <h2>
+          {locale === "en"
+            ? "Progress looks different on everyone."
+            : "각자의 출발점, 함께 만드는 변화."}
+        </h2>
+        <p>{t("description")}</p>
       </div>
-
-      <div className="mt-7 overflow-hidden">
-        <div className="marquee-track flex w-max gap-4">
-          {allTestimonials.map((t, index) => (
-            <div
-              key={index}
-              className="w-[340px] flex-shrink-0 rounded-2xl border border-white/5 bg-gradient-to-b from-[#141414] to-[#111] p-6"
-            >
-              <div className="flex flex-wrap items-center gap-2">
-                <Badge className="bg-primary/10 text-primary text-[10px] font-bold">
-                  {t.badge}
-                </Badge>
-                <span className="text-base font-extrabold text-primary">
-                  {t.stat}
-                </span>
-              </div>
-              <p className="mt-3 text-[14px] text-gray-300">{t.text}</p>
-              <div className="mt-4 flex items-center gap-3 border-t border-white/5 pt-4">
-                <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
-                  {t.author[0]}
-                </div>
-                <div>
-                  <div className="text-sm font-semibold text-gray-200">
-                    {t.author}
-                  </div>
-                  <div className="text-[11px] text-gray-500">{t.tag}</div>
-                </div>
-              </div>
+      <div className="community-grid">
+        {localizedTestimonials.map((item, index) => (
+          <article key={item.author}>
+            <span className="eyebrow">MEMBER STORY / 0{index + 1}</span>
+            <h3>{item.stat}</h3>
+            <blockquote>{item.text}</blockquote>
+            <div className="community-author">
+              <span>{item.author}</span>
+              <p>{item.tag}</p>
             </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="container mx-auto max-w-7xl px-6">
-        <div className="mt-10 text-center">
-          <a
-            href="#pricing"
-            className="inline-flex items-center gap-2 rounded-full bg-primary px-8 py-3.5 text-sm font-bold text-black transition hover:bg-[#d4ff5a] hover:shadow-[0_0_30px_rgba(198,255,51,0.25)] hover:-translate-y-0.5"
-          >
-            {t("cta")}
-          </a>
-        </div>
+          </article>
+        ))}
       </div>
     </section>
   );
 };
-
 export default SocialProofSection;

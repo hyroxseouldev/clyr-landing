@@ -11,18 +11,18 @@ import FloatingCTA from "../components/home/floating-cta";
 
 export default function HomePage() {
   return (
-    <>
+    <main className="performance-site">
       <HeroSection />
       <ProblemSection />
       <CoachSection />
       <FeatureReviewSection />
+      <SocialProofSection />
       <PricingSection />
       <ColaboSection />
-      <SocialProofSection />
       <FaqSection />
       <FooterCTASection />
 
       <FloatingCTA />
-    </>
+    </main>
   );
 }

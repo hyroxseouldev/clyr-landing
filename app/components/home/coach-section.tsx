@@ -380,93 +380,78 @@ export default function CoachSection() {
       : coachTabs;
 
   return (
-    <section className="bg-[#080808] py-16 md:py-24" id="coach">
-      <div className="container mx-auto max-w-7xl px-6">
-        <div>
-          <span className="inline-block text-[11px] font-semibold uppercase tracking-[3px] text-primary">
-            Authority
-          </span>
-          <h2 className="mt-2 text-3xl font-extrabold leading-[1.15] md:text-4xl lg:text-[46px]">
-            <span className="whitespace-pre-line">{t("title")}</span>
-          </h2>
-        </div>
-
-        <div className="mt-10 grid grid-cols-1 gap-10 sm:grid-cols-2">
-          <div className="relative">
-            <div className="relative aspect-square w-full overflow-hidden rounded-2xl border border-white/5 bg-[#111]">
-              <Image
-                src="/assets/coach_profile.webp"
-                alt={
-                  locale === "en" ? "Junhyun Jeon, HYROX coach" : "전준현 코치"
-                }
-                fill
-                className="object-cover"
-                loading="lazy"
-                sizes="(max-width: 640px) 100vw, 50vw"
-              />
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/85 to-transparent p-5 text-center">
-                <div className="text-xl font-extrabold">
-                  {locale === "en" ? "Junhyun Jeon" : "전준현"}
-                </div>
-                <div className="text-xs font-semibold text-primary">
-                  HYROX ELITE PERFORMANCE COACH
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <p className="text-[15px] text-gray-400 md:text-base">
-              <span className="whitespace-pre-line">{t("bio")}</span>
-            </p>
-
-            <div className="mt-3">
-              <span className="text-2xl font-extrabold">
-                {locale === "en" ? "Junhyun Jeon" : "전준현"}{" "}
-                <small className="text-sm font-medium text-gray-500">
-                  | AMOR
-                </small>
-              </span>
-              <div className="text-xs font-semibold uppercase tracking-wider text-primary">
-                {t("role")}
-              </div>
-            </div>
-
-            <div className="mt-4 rounded-xl border-l-4 border-primary bg-white/5 p-4">
-              <p className="text-[14px] italic text-gray-300 md:text-[15px]">
-                {locale === "en"
-                  ? "The HYROX pacing built through countless trials and errors, delivered directly to your training."
-                  : "수많은 시행착오 끝에 찾아낸 하이록스 최적의 훈련 템포를 여러분께 그대로 이식해 드립니다."}
-              </p>
-              <span className="mt-1.5 block text-xs font-semibold text-primary not-italic">
-                -{" "}
-                {locale === "en"
-                  ? "Junhyun Jeon, AMOR LAB Head Coach"
-                  : "전준현, AMOR LAB 대표 코치"}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <Tabs defaultValue="career" className="mt-12">
-          <TabsList className="group-data-[orientation=horizontal]/tabs:h-auto w-full flex-wrap justify-start gap-3 bg-transparent p-0">
-            {tabs.map((tab) => (
-              <TabsTrigger
-                key={tab.id}
-                value={tab.id}
-                className="h-auto flex-none rounded-full border border-white/10 bg-white/5 px-5 py-2 text-xs font-semibold text-gray-500 hover:border-primary/20 hover:text-primary data-[state=active]:border-primary/30 data-[state=active]:bg-primary/10 data-[state=active]:text-primary dark:data-[state=active]:bg-primary/10 dark:data-[state=active]:text-primary"
-              >
-                {tab.label}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-          {tabs.map((tab) => (
-            <TabsContent key={tab.id} value={tab.id}>
-              <ActivePanel activeTab={tab.id} />
-            </TabsContent>
-          ))}
-        </Tabs>
+    <section className="editorial-section coach-section" id="coach">
+      <div className="section-index">
+        <span>02 / MEET YOUR COACH</span>
+        <span>EXPERIENCE, IN EVERY SESSION.</span>
       </div>
+      <div className="coach-intro">
+        <div className="coach-portrait">
+          <Image
+            src="/assets/coach_profile.webp"
+            alt={
+              locale === "en"
+                ? "Coach Junhyun Jeon on the HYROX Shenzhen podium"
+                : "하이록스 선전 시상대 위의 전준현 코치"
+            }
+            fill
+            className="object-cover"
+            sizes="(max-width: 760px) 100vw, 50vw"
+          />
+          <span>
+            THE WORK.
+            <br />
+            THE PROOF.
+          </span>
+        </div>
+        <div className="coach-story">
+          <span className="eyebrow">ATHLETE FIRST. COACH ALWAYS.</span>
+          <h2>
+            {locale === "en" ? (
+              <>
+                In the arena.
+                <br />
+                <span>In your corner.</span>
+              </>
+            ) : (
+              <>
+                직접 뛰는 선수.
+                <br />
+                <span>함께 뛰는 코치.</span>
+              </>
+            )}
+          </h2>
+          <p>{t("bio")}</p>
+          <div className="coach-signature">
+            <strong>{locale === "en" ? "Junhyun Jeon" : "전준현"}</strong>
+            <span>HEAD COACH / AMOR LAB</span>
+          </div>
+          <div className="coach-evidence">
+            <div>
+              <strong>59:25</strong>
+              <span>HYROX SHENZHEN</span>
+            </div>
+            <div>
+              <strong>01</strong>
+              <span>MEN 30–34 / PODIUM</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <Tabs defaultValue="career" className="coach-tabs">
+        <TabsList className="coach-tab-list group-data-[orientation=horizontal]/tabs:h-auto">
+          {tabs.map((tab) => (
+            <TabsTrigger key={tab.id} value={tab.id} className="coach-tab">
+              {tab.label}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+        {tabs.map((tab) => (
+          <TabsContent key={tab.id} value={tab.id}>
+            <ActivePanel activeTab={tab.id} />
+          </TabsContent>
+        ))}
+      </Tabs>
     </section>
   );
 }

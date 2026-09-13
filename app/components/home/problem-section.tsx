@@ -1,61 +1,91 @@
-import React from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { ArrowUpRight, Activity, ScanLine, MessagesSquare } from "lucide-react";
 
-const ProblemSection = () => {
+export default function ProblemSection() {
+  const en = useLocale() === "en";
   const t = useTranslations("Problem");
+  const items = en
+    ? [
+        [
+          "ASSESS",
+          "Understand your starting point.",
+          "Your current ability, movement and goals shape the plan. Training starts with understanding you.",
+        ],
+        [
+          "BUILD",
+          "Train with a clear purpose.",
+          "Running and station work come together in a program built around your level and race goals.",
+        ],
+        [
+          "REFINE",
+          "Feedback. Adjust. Progress.",
+          "Stay connected with your coach. Use video feedback to refine your movement and your next session.",
+        ],
+      ]
+    : [
+        [
+          "ASSESS",
+          "당신의 출발점부터.",
+          "현재 수행 능력과 움직임, 목표를 살핍니다. 나를 제대로 아는 것에서 훈련은 시작됩니다.",
+        ],
+        [
+          "BUILD",
+          "이유 있는 훈련을.",
+          "러닝과 스테이션을 하나의 흐름으로 연결합니다. 내 수준과 목표에 맞는 훈련을 쌓아갑니다.",
+        ],
+        [
+          "REFINE",
+          "피드백이 만드는 차이.",
+          "코치와의 소통, 그리고 영상 피드백. 매 세션의 움직임을 다듬어 다음 훈련에 반영합니다.",
+        ],
+      ];
+  const icons = [ScanLine, Activity, MessagesSquare];
   return (
-    <section className="bg-[#0d0d0d] py-16 md:py-24" id="agitation">
-      <div className="container mx-auto max-w-7xl px-6">
-        <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
-          <div>
-            <span className="inline-block text-[11px] font-semibold uppercase tracking-[3px] text-primary">
-              Problem
-            </span>
-
-            <h2 className="mt-2 text-3xl font-extrabold leading-[1.15] md:text-4xl lg:text-[46px]">
-              <span className="whitespace-pre-line">{t("title")}</span>
-            </h2>
-
-            <p className="mt-3 text-[15px] text-gray-400 md:text-base">
-              <span className="whitespace-pre-line">{t("description")}</span>
-            </p>
-
-            <div className="mt-6 space-y-3">
-              {[0, 1, 2].map((index) => (
-                <div
-                  key={index}
-                  className="group motion-safe:animate-[fade-up_0.5s_ease-out_both] flex items-start gap-3 rounded-xl border border-white/5 bg-white/5 p-4 text-[15px] transition hover:-translate-y-0.5 hover:border-primary/20 hover:bg-primary/5"
-                  style={{ animationDelay: `${index * 80}ms` }}
-                >
-                  <div className="mt-1 h-5 w-5 flex-shrink-0 rounded border-2 border-white/20 transition group-hover:border-primary" />
-                  <p className="text-gray-300">
-                    {t(`questions.${index}`)}
-                  </p>
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-7 flex items-center gap-4 rounded-r-xl border-l-4 border-primary bg-primary/10 p-4 transition hover:bg-primary/15">
-              <p className="text-sm text-gray-300 md:text-[15px]">
-                {t("insight")}
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-center justify-center rounded-2xl border border-white/5 bg-gradient-to-br from-[#141414] to-[#1a1a1a] transition hover:border-primary/20">
-            <div className="p-10 text-center">
-              <div className="relative mx-auto mb-5 flex h-28 w-28 animate-[pulse-ring_2.5s_ease-out_infinite] items-center justify-center rounded-full border-2 border-primary/20">
-                <div className="h-14 w-14 animate-pulse rounded-full border-2 border-primary bg-primary/10" />
-              </div>
-              <p className="text-sm text-gray-500">
-                <span className="whitespace-pre-line">{t("balance")}</span>
-              </p>
-            </div>
-          </div>
+    <section className="editorial-section method-section" id="agitation">
+      <div className="section-index">
+        <span>01 / THE APPROACH</span>
+        <span>PRECISION OVER GUESSWORK</span>
+      </div>
+      <div className="section-heading">
+        <h2>
+          {en ? (
+            <>
+              Don’t just work harder.
+              <br />
+              <span>Train with intent.</span>
+            </>
+          ) : (
+            <>
+              더 많이, 보다
+              <br />
+              <span>더 정확하게.</span>
+            </>
+          )}
+        </h2>
+        <div>
+          <p>{t("description")}</p>
+          <a href="#pricing" className="text-link">
+            {en ? "Find your program" : "나에게 맞는 프로그램"}
+            <ArrowUpRight size={16} />
+          </a>
         </div>
+      </div>
+      <div className="method-grid">
+        {items.map(([label, title, body], i) => {
+          const Icon = icons[i];
+          return (
+            <article key={label}>
+              <div className="method-top">
+                <span>0{i + 1}</span>
+                <Icon size={24} strokeWidth={1.3} />
+              </div>
+              <span className="eyebrow">{label}</span>
+              <h3>{title}</h3>
+              <p>{body}</p>
+            </article>
+          );
+        })}
       </div>
     </section>
   );
-};
-
-export default ProblemSection;
+}
