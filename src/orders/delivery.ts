@@ -1,6 +1,6 @@
 import { and, eq, inArray, sql } from "drizzle-orm";
 import type { getDb } from "../db";
-import { orderMessages } from "../db/schema";
+import { orderMessages, adminOrderMessages } from "../db/schema";
 export type PaymentTransport = (job: {
   id: string;
   recipient: string;
@@ -13,17 +13,25 @@ export async function deliverPaymentMessageWith(
   orderId: string,
   transport: PaymentTransport,
 ) {
+  return deliverOrderMessageWith(db, orderMessages, orderId, transport);
+}
+export async function deliverOrderMessageWith(
+  db: ReturnType<typeof getDb>,
+  table: typeof orderMessages | typeof adminOrderMessages,
+  orderId: string,
+  transport: PaymentTransport,
+) {
   const [job] = await db
-    .update(orderMessages)
+    .update(table)
     .set({
       status: "sending",
-      attempts: sql`${orderMessages.attempts} + 1`,
+      attempts: sql`${table.attempts} + 1`,
       updated_at: new Date(),
     })
     .where(
       and(
-        eq(orderMessages.order_id, orderId),
-        inArray(orderMessages.status, ["pending", "failed"]),
+        eq(table.order_id, orderId),
+        inArray(table.status, ["pending", "failed"]),
       ),
     )
     .returning();
@@ -38,8 +46,8 @@ export async function deliverPaymentMessageWith(
     outcome = "unknown";
   }
   await db
-    .update(orderMessages)
+    .update(table)
     .set({ status: outcome, provider_id: providerId, updated_at: new Date() })
-    .where(eq(orderMessages.id, job.id));
+    .where(eq(table.id, job.id));
   return outcome;
 }

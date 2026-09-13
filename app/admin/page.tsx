@@ -1,4 +1,5 @@
 "use client";
+import { OrderAlertEditor } from "./order-alert-editor";
 import { useCallback, useEffect, useState } from "react";
 import { Dialog } from "radix-ui";
 import { BankAccountEditor } from "./bank-account-editor";
@@ -315,6 +316,7 @@ export default function MasterPage() {
         {authorized && (
           <>
             <BankAccountEditor />
+            <OrderAlertEditor />
             <MessageTemplateEditor />
             <section className="mb-7 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-border bg-card p-5">
               <div>
@@ -516,6 +518,48 @@ export default function MasterPage() {
                             {order.grant.status === "waiting"
                               ? "수령 상태 확인"
                               : "발급 재시도"}
+                          </Button>
+                        )}
+                      </div>
+                    )}
+                    {order.alert?.status && (
+                      <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-xl bg-background/60 p-3 text-xs">
+                        <span>
+                          관리자 새 주문 알림 ·{" "}
+                          {messageLabels[order.alert.status]} ·{" "}
+                          {order.alert.recipient}
+                        </span>
+                        {["pending", "failed"].includes(order.alert.status) && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            disabled={busy}
+                            onClick={async () => {
+                              setBusy(true);
+                              setError("");
+                              try {
+                                const r = await fetch(
+                                  `/api/admin/orders/${order.id}/alert`,
+                                  { method: "POST" },
+                                );
+                                const data = await r.json();
+                                if (!r.ok) throw new Error(data.message);
+                                setNotice(
+                                  `관리자 알림: ${messageLabels[data.alertStatus as keyof typeof messageLabels]}`,
+                                );
+                                await load();
+                              } catch (e) {
+                                setError(
+                                  e instanceof Error
+                                    ? e.message
+                                    : "재발송하지 못했습니다.",
+                                );
+                              } finally {
+                                setBusy(false);
+                              }
+                            }}
+                          >
+                            관리자 알림 재발송
                           </Button>
                         )}
                       </div>

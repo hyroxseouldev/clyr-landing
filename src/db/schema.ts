@@ -204,3 +204,36 @@ export const orderGrants = pgTable("order_grants", {
     .notNull()
     .defaultNow(),
 });
+
+export const orderAlertSettings = pgTable("order_alert_settings", {
+  id: text("id").primaryKey(),
+  enabled: boolean("enabled").notNull().default(true),
+  recipient: text("recipient").notNull(),
+  body: text("body").notNull(),
+  revision: text("revision").notNull(),
+  updated_by: text("updated_by").references(() => user.id),
+  updated_at: timestamp("updated_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});
+export const adminOrderMessages = pgTable("admin_order_messages", {
+  id: text("id").primaryKey(),
+  order_id: text("order_id")
+    .notNull()
+    .unique()
+    .references(() => orders.id),
+  recipient: text("recipient").notNull(),
+  body: text("body").notNull(),
+  status: text("status")
+    .$type<"pending" | "sending" | "accepted" | "failed" | "unknown">()
+    .notNull()
+    .default("pending"),
+  attempts: integer("attempts").notNull().default(0),
+  provider_id: text("provider_id"),
+  created_at: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+  updated_at: timestamp("updated_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});

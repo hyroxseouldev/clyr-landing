@@ -105,6 +105,10 @@ export function buildOrder(
   };
 }
 export type OrderRow = {
+  alert?: {
+    status: "pending" | "sending" | "accepted" | "failed" | "unknown";
+    recipient: string;
+  } | null;
   grant?: {
     status: "pending" | "sending" | "waiting" | "claimed" | "failed";
     startsAt?: string | null;

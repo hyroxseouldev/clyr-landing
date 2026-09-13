@@ -12,7 +12,8 @@
     "db:studio": "drizzle-kit studio",
     "test:auth": "tsx --test tests/auth.test.ts",
     "test:orders": "tsx --test tests/orders.test.ts",
-    "test:mobile-grants": "tsx --test tests/mobile-grants.test.ts"
+    "test:mobile-grants": "tsx --test tests/mobile-grants.test.ts",
+    "test:order-alert": "tsx --test tests/order-alert.test.ts"
   },
   "dependencies": {
     "@better-auth/drizzle-adapter": "^1.7.4",

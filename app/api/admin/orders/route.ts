@@ -1,6 +1,11 @@
 import { and, count, desc, eq, ilike, or } from "drizzle-orm";
 import { getDb } from "@/db";
-import { orders, orderMessages, orderGrants } from "@/db/schema";
+import {
+  orders,
+  orderMessages,
+  orderGrants,
+  adminOrderMessages,
+} from "@/db/schema";
 import { replyError, requireMaster } from "@/orders/server";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -35,6 +40,10 @@ export async function GET(request: Request) {
       db
         .select({
           order: orders,
+          alert: {
+            status: adminOrderMessages.status,
+            recipient: adminOrderMessages.recipient,
+          },
           grant: {
             status: orderGrants.status,
             startsAt: orderGrants.starts_at,
@@ -48,6 +57,10 @@ export async function GET(request: Request) {
         .from(orders)
         .leftJoin(orderMessages, eq(orders.id, orderMessages.order_id))
         .leftJoin(orderGrants, eq(orders.id, orderGrants.order_id))
+        .leftJoin(
+          adminOrderMessages,
+          eq(orders.id, adminOrderMessages.order_id),
+        )
         .where(where)
         .orderBy(desc(orders.created_at), desc(orders.id))
         .limit(25)
@@ -61,6 +74,7 @@ export async function GET(request: Request) {
           ...row.order,
           message: row.message,
           grant: row.grant,
+          alert: row.alert,
         })),
         total: totals[0].total,
         page,

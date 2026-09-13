@@ -1,3 +1,6 @@
+import { after } from "next/server";
+import { enqueueAdminOrderAlert } from "@/orders/admin-alert";
+import { deliverAdminOrderAlert } from "@/sms/admin-order-alert";
 import { eq, desc } from "drizzle-orm";
 import { getDb } from "@/db";
 import { orders, bankSettings } from "@/db/schema";
@@ -9,6 +12,7 @@ import {
   requirePhone,
 } from "@/orders/server";
 export const runtime = "nodejs";
+export const maxDuration = 60;
 export const dynamic = "force-dynamic";
 export async function POST(request: Request) {
   try {
@@ -16,7 +20,7 @@ export async function POST(request: Request) {
     const user = await requirePhone(request);
     const body = await readBody(request);
     const db = getDb();
-    return await db.transaction(async (tx) => {
+    const result = await db.transaction(async (tx) => {
       const [account] = await tx
         .select()
         .from(bankSettings)
@@ -34,6 +38,7 @@ export async function POST(request: Request) {
         .values({ ...order, status: "pending", user_id: user.id })
         .onConflictDoNothing()
         .returning({ id: orders.id });
+      if (inserted.length) await enqueueAdminOrderAlert(tx, order);
       let savedAccount = order.order_payload.bankAccount;
       if (!inserted.length) {
         const [existing] = await tx
@@ -47,11 +52,23 @@ export async function POST(request: Request) {
           throw new OrderError(409, "이미 처리된 주문 요청입니다.");
         savedAccount = existing.order_payload.bankAccount ?? savedAccount;
       }
-      return Response.json(
-        { ok: true, orderId: order.id, bankAccount: savedAccount },
-        { status: inserted.length ? 201 : 200 },
-      );
+      return {
+        orderId: order.id,
+        bankAccount: savedAccount,
+        created: !!inserted.length,
+      };
     });
+    after(async () => {
+      try {
+        await deliverAdminOrderAlert(result.orderId);
+      } catch {
+        /* The durable job remains visible to the master for recovery. */
+      }
+    });
+    return Response.json(
+      { ok: true, orderId: result.orderId, bankAccount: result.bankAccount },
+      { status: result.created ? 201 : 200 },
+    );
   } catch (error) {
     return replyError(error);
   }
