@@ -5,7 +5,7 @@ const HeroSection = () => {
   const t = useTranslations("Home");
   return (
     <section
-      className="relative flex min-h-[70vh] items-center justify-center overflow-hidden bg-[#080808] py-12 md:min-h-[75vh] md:py-16 lg:min-h-[80vh] border-x border-base-content/10"
+      className="relative flex min-h-[70vh] items-center justify-center overflow-hidden bg-[#080808] py-12 md:min-h-[75vh] md:py-16 lg:min-h-[80vh] border-x border-foreground/10"
       id="hero"
     >
       <video
@@ -28,21 +28,15 @@ const HeroSection = () => {
             </div>
           </div>
 
-          <h1
-            className="motion-safe:animate-[fade-up_0.55s_ease-out_0.2s_both] mt-4 text-3xl font-black leading-[1.1] tracking-tight md:text-4xl lg:text-5xl xl:text-[52px]"
-          >
+          <h1 className="motion-safe:animate-[fade-up_0.55s_ease-out_0.2s_both] mt-4 text-3xl font-black leading-[1.1] tracking-tight md:text-4xl lg:text-5xl xl:text-[52px]">
             <span className="whitespace-pre-line">{t("title")}</span>
           </h1>
 
-          <p
-            className="motion-safe:animate-[fade-up_0.55s_ease-out_0.3s_both] mt-3 max-w-md text-[14px] text-gray-300 md:text-[15px]"
-          >
+          <p className="motion-safe:animate-[fade-up_0.55s_ease-out_0.3s_both] mt-3 max-w-md text-[14px] text-gray-300 md:text-[15px]">
             <span className="whitespace-pre-line">{t("description")}</span>
           </p>
 
-          <div
-            className="motion-safe:animate-[fade-up_0.55s_ease-out_0.4s_both] mt-5 flex flex-col items-start gap-3 sm:flex-row sm:items-center"
-          >
+          <div className="motion-safe:animate-[fade-up_0.55s_ease-out_0.4s_both] mt-5 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
             <a
               href="#pricing"
               className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-black shadow-lg shadow-primary/20 transition-all hover:bg-[#d4ff5a] hover:shadow-[0_0_40px_rgba(198,255,51,0.35)] hover:-translate-y-1"
@@ -57,9 +51,7 @@ const HeroSection = () => {
             </a>
           </div>
 
-          <div
-            className="motion-safe:animate-[fade-up_0.55s_ease-out_0.5s_both] mt-8 flex flex-wrap gap-6 sm:gap-8"
-          >
+          <div className="motion-safe:animate-[fade-up_0.55s_ease-out_0.5s_both] mt-8 flex flex-wrap gap-6 sm:gap-8">
             <div className="group">
               <div className="text-xl font-extrabold text-primary transition group-hover:scale-110 md:text-2xl">
                 20+
@@ -72,7 +64,9 @@ const HeroSection = () => {
               <div className="text-xl font-extrabold text-primary transition group-hover:scale-110 md:text-2xl">
                 SUB-1
               </div>
-              <div className="text-[10px] text-gray-400">{t("stats.record")}</div>
+              <div className="text-[10px] text-gray-400">
+                {t("stats.record")}
+              </div>
             </div>
             <div className="group">
               <div className="text-xl font-extrabold text-primary transition group-hover:scale-110 md:text-2xl">

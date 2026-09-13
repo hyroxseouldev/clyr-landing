@@ -1,41 +1,52 @@
 @import "tailwindcss";
-@plugin "daisyui" {
-  themes: false;
-  logs: false;
-}
-@plugin "daisyui/theme" {
-  name: "amor";
-  default: true;
-  prefersdark: true;
-  color-scheme: dark;
-  --color-base-100: #080808;
-  --color-base-200: #0d0d0d;
-  --color-base-300: #181818;
-  --color-base-content: #ffffff;
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* AMOR brand tokens, independent of the component library. */
+@theme inline {
+  --color-background: #080808;
+  --color-foreground: #ffffff;
+  --color-card: #0d0d0d;
+  --color-card-foreground: #ffffff;
+  --color-popover: #121212;
+  --color-popover-foreground: #ffffff;
   --color-primary: #c6ff33;
-  --color-primary-content: #080808;
+  --color-primary-foreground: #080808;
   --color-secondary: #8cffb9;
-  --color-secondary-content: #07150d;
-  --color-accent: #c6ff33;
-  --color-accent-content: #080808;
-  --color-neutral: #121212;
-  --color-neutral-content: #f5f5f5;
+  --color-secondary-foreground: #07150d;
+  --color-muted: #181818;
+  --color-muted-foreground: #a3a3a3;
+  --color-accent: #242424;
+  --color-accent-foreground: #ffffff;
+  --color-destructive: #ff8d8d;
+  --color-border: #282828;
+  --color-input: #3b3b3b;
+  --color-ring: #c6ff33;
   --color-info: #9ad7ff;
-  --color-info-content: #07131a;
   --color-success: #8cffb9;
-  --color-success-content: #07150d;
   --color-warning: #ffe27a;
-  --color-warning-content: #171202;
   --color-error: #ff8d8d;
-  --color-error-content: #1a0606;
-  --radius-selector: 1rem;
-  --radius-field: 2rem;
-  --radius-box: 0.5rem;
-  --size-selector: 0.25rem;
-  --size-field: 0.25rem;
-  --border: 1px;
-  --depth: 0;
-  --noise: 0;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    color-scheme: dark;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]) {
+    cursor: pointer;
+  }
 }
 
 @font-face {

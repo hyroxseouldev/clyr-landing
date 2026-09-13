@@ -56,7 +56,7 @@ export default async function LocaleLayout({ children, params }: Props) {
   const messages = await getMessages();
 
   return (
-    <html lang={validLocale} data-theme="amor">
+    <html lang={validLocale} className="dark">
       <body>
         <NextIntlClientProvider messages={messages}>
           <SiteHeader />

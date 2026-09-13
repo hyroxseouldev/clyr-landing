@@ -1,3 +1,6 @@
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import React from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
@@ -6,12 +9,12 @@ const ColaboSection = () => {
   const t = useTranslations("Collaboration");
   return (
     <section
-      className="border-y border-white/5 bg-base-100 py-16 md:py-24"
+      className="border-y border-white/5 bg-background py-16 md:py-24"
       id="collaboration"
     >
       <div className="container mx-auto max-w-4xl px-6">
-        <div className="card bg-base-200/50 backdrop-blur-sm border border-white/10 shadow-2xl">
-          <div className="card-body items-center text-center p-8 md:p-12">
+        <Card className="bg-card/50 backdrop-blur-sm border border-white/10 shadow-2xl">
+          <CardContent className="items-center text-center p-8 md:p-12">
             {/* 로고 */}
             <div className="mb-4 max-w-[200px] md:max-w-[240px] relative">
               <Image
@@ -28,9 +31,9 @@ const ColaboSection = () => {
               <span className="text-[11px] font-semibold uppercase tracking-[3px] text-primary">
                 Collaboration
               </span>
-              <span className="badge badge-outline badge-primary px-6 py-4 text-sm font-black uppercase tracking-widest">
+              <Badge className="border-primary bg-transparent text-primary bg-primary text-primary-foreground px-6 py-4 text-sm font-black uppercase tracking-widest">
                 Official Ambassador
-              </span>
+              </Badge>
             </div>
 
             {/* 타이틀 */}
@@ -46,32 +49,38 @@ const ColaboSection = () => {
             </p>
 
             {/* 버튼 */}
-            <div className="card-actions mt-6">
-              <a
-                href="https://themedalist.co.kr/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn btn-outline btn-primary gap-2 px-8 py-3 normal-case text-sm font-semibold"
+            <div className="flex flex-wrap items-start gap-2 mt-6">
+              <Button
+                asChild
+                variant="outline"
+                size="default"
+                className="border-primary text-primary hover:bg-primary hover:text-primary-foreground gap-2 px-8 py-3 normal-case text-sm font-semibold"
               >
-                {t("visit")}
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
+                <a
+                  href="https://themedalist.co.kr/"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M14 5l7 7m0 0l-7 7m7-7H3"
-                  />
-                </svg>
-              </a>
+                  {t("visit")}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M14 5l7 7m0 0l-7 7m7-7H3"
+                    />
+                  </svg>
+                </a>
+              </Button>
             </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
     </section>
   );

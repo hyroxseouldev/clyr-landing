@@ -1,3 +1,4 @@
+import { Badge } from "@/components/ui/badge";
 import React from "react";
 import { landingProgramCards } from "@/data/program-catalog";
 import { getProgramPricing } from "@/pricing";
@@ -6,24 +7,53 @@ import { useLocale, useTranslations } from "next-intl";
 const PricingSection = () => {
   const t = useTranslations("Pricing");
   const locale = useLocale();
-  const localizedCards = locale === "en"
-    ? landingProgramCards.map((card, index) => ({
-        ...card,
-        name: ["Foundation 4-Week", "Race Preparation", "Running Class", "HYROX Stations"][index] ?? card.name,
-        description: [
-          "A foundation program combining running and HYROX stations.",
-          "Four weekly running and station sessions with in-person coaching.",
-          "Running sessions tailored to your level and training intensity.",
-          "Purpose-built station programming to strengthen weak points.",
-        ][index] ?? card.description,
-        features: [
-          ["4-week class", "Integrated running + stations", "One in-person meeting and lesson", "Fundamentals tailored to your level"],
-          ["4-week class", "Four sessions per week", "Integrated running + station training", "Two in-person sessions and meetings"],
-          ["4-week class", "Three or four sessions per week", "Programming by running level and intensity", "Pacing and goal-specific running support"],
-          ["4-week class", "Three sessions per week", "Purpose-built station programming", "Strength-endurance work for weak points"],
-        ][index] ?? card.features,
-      }))
-    : landingProgramCards;
+  const localizedCards =
+    locale === "en"
+      ? landingProgramCards.map((card, index) => ({
+          ...card,
+          name:
+            [
+              "Foundation 4-Week",
+              "Race Preparation",
+              "Running Class",
+              "HYROX Stations",
+            ][index] ?? card.name,
+          description:
+            [
+              "A foundation program combining running and HYROX stations.",
+              "Four weekly running and station sessions with in-person coaching.",
+              "Running sessions tailored to your level and training intensity.",
+              "Purpose-built station programming to strengthen weak points.",
+            ][index] ?? card.description,
+          features:
+            [
+              [
+                "4-week class",
+                "Integrated running + stations",
+                "One in-person meeting and lesson",
+                "Fundamentals tailored to your level",
+              ],
+              [
+                "4-week class",
+                "Four sessions per week",
+                "Integrated running + station training",
+                "Two in-person sessions and meetings",
+              ],
+              [
+                "4-week class",
+                "Three or four sessions per week",
+                "Programming by running level and intensity",
+                "Pacing and goal-specific running support",
+              ],
+              [
+                "4-week class",
+                "Three sessions per week",
+                "Purpose-built station programming",
+                "Strength-endurance work for weak points",
+              ],
+            ][index] ?? card.features,
+        }))
+      : landingProgramCards;
   function formatPrice(value: number) {
     return `₩${new Intl.NumberFormat("ko-KR").format(value)}`;
   }
@@ -69,9 +99,9 @@ const PricingSection = () => {
                 } transition hover:-translate-y-1 hover:border-primary/30`}
               >
                 {card.isFeatured && (
-                  <div className="badge badge-primary -mt-10 mx-auto mb-2 w-fit text-[10px] uppercase tracking-wider">
+                  <Badge className="bg-primary text-primary-foreground -mt-10 mx-auto mb-2 w-fit text-[10px] uppercase tracking-wider">
                     {t("recommended")}
-                  </div>
+                  </Badge>
                 )}
 
                 <div className="text-xs font-semibold uppercase tracking-wider text-primary">

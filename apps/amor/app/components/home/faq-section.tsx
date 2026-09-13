@@ -1,6 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "@/components/ui/accordion";
 import { useTranslations } from "next-intl";
 
 const FaqSection = () => {
@@ -9,8 +14,6 @@ const FaqSection = () => {
     q: t(`items.${index}.q`),
     a: t(`items.${index}.a`),
   }));
-
-  const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
     <section className="bg-[#0d0d0d] py-16 md:py-24" id="faq">
@@ -27,36 +30,27 @@ const FaqSection = () => {
           </p>
         </div>
 
-        <div className="mt-7 space-y-2">
-          {faqs.map((faq, index) => {
-            const isOpen = openIndex === index;
-
-            return (
-              <div
-                key={index}
-                className={`collapse collapse-arrow rounded-xl border ${
-                  isOpen
-                    ? "border-primary/30 [&_.collapse-title]:text-primary"
-                    : "border-white/10 hover:border-primary/20"
-                } bg-white/5`}
-              >
-                <input
-                  type="radio"
-                  name="faq-accordion"
-                  checked={isOpen}
-                  onChange={() => setOpenIndex(isOpen ? null : index)}
-                  className="peer"
-                />
-                <div className="collapse-title text-[14px] font-semibold text-gray-200 hover:text-primary md:text-[15px]">
-                  {faq.q}
-                </div>
-                <div className="collapse-content text-[14px] text-gray-500">
-                  <p>{faq.a}</p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+        <Accordion
+          type="single"
+          collapsible
+          defaultValue="faq-0"
+          className="mt-7 space-y-2"
+        >
+          {faqs.map((faq, index) => (
+            <AccordionItem
+              key={index}
+              value={`faq-${index}`}
+              className="rounded-xl border last:border-b border-white/10 bg-white/5 px-4 data-[state=open]:border-primary/30 hover:border-primary/20"
+            >
+              <AccordionTrigger className="text-[14px] font-semibold text-gray-200 hover:text-primary hover:no-underline data-[state=open]:text-primary md:text-[15px]">
+                {faq.q}
+              </AccordionTrigger>
+              <AccordionContent className="text-[14px] text-gray-500">
+                <p>{faq.a}</p>
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
       </div>
     </section>
   );

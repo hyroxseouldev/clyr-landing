@@ -1,4 +1,10 @@
 "use client";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import {
+  NativeSelect,
+  NativeSelectOption,
+} from "@/components/ui/native-select";
 
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
@@ -22,9 +28,9 @@ export function SiteHeader() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 border-b border-base-content/10 bg-base-100/85 backdrop-blur-xl">
-      <ContainerWrapper className="site-header-shell navbar min-h-16">
-        <div className="navbar-start">
+    <header className="sticky top-0 z-50 border-b border-foreground/10 bg-background/85 backdrop-blur-xl">
+      <ContainerWrapper className="site-header-shell flex items-center p-2 min-h-16">
+        <div className="flex flex-1 items-center">
           <Link
             className="flex items-center transition-opacity hover:opacity-80"
             href="/"
@@ -42,25 +48,31 @@ export function SiteHeader() {
         </div>
 
         {/* 데스크탑 메뉴 */}
-        <nav className="navbar-center hidden lg:flex" aria-label={t("home")}>
+        <nav
+          className="shrink-0 items-center hidden lg:flex"
+          aria-label={t("home")}
+        >
           <div className="flex items-center gap-4">
             {navItems.map((item) => (
-              <Link
+              <Button
                 key={item.href}
-                className="btn btn-ghost btn-sm rounded-field text-base-content/70"
-                href={item.href}
+                asChild
+                variant="ghost"
+                size="sm"
+                className="rounded-full text-foreground/70"
               >
-                {item.label}
-              </Link>
+                <Link href={item.href}>{item.label}</Link>
+              </Button>
             ))}
           </div>
         </nav>
 
         {/* 우측 버튼 */}
-        <div className="navbar-end gap-2 lg:gap-3">
-          <label className="hidden sm:block" aria-label="Language">
-            <select
-              className="select select-bordered select-sm w-28 border-base-content/20 bg-base-200 text-base-content"
+        <div className="flex flex-1 items-center justify-end gap-2 lg:gap-3">
+          <Label className="hidden sm:block" aria-label="Language">
+            <NativeSelect
+              aria-label="Language"
+              className="h-8 text-xs w-28 border-foreground/20 bg-card text-foreground"
               value={locale}
               onChange={(event) =>
                 router.replace(pathname, {
@@ -68,33 +80,47 @@ export function SiteHeader() {
                 })
               }
             >
-              <option className="bg-base-200 text-base-content" value="ko">
+              <NativeSelectOption
+                className="bg-card text-foreground"
+                value="ko"
+              >
                 {t("korean")}
-              </option>
-              <option className="bg-base-200 text-base-content" value="en">
+              </NativeSelectOption>
+              <NativeSelectOption
+                className="bg-card text-foreground"
+                value="en"
+              >
                 {t("english")}
-              </option>
-            </select>
-          </label>
+              </NativeSelectOption>
+            </NativeSelect>
+          </Label>
           {/* 주문 확인 - 모바일에서 숨김 */}
-          <Link
-            className="btn btn-outline btn-md hidden border-base-content/25 text-base-content/80 sm:inline-flex px-5"
-            href="/lookup"
+          <Button
+            asChild
+            variant="outline"
+            size="default"
+            className="hidden border-foreground/25 text-foreground/80 sm:inline-flex px-5"
           >
-            {t("lookup")}
-          </Link>
+            <Link href="/lookup">{t("lookup")}</Link>
+          </Button>
 
           {/* 주문하기 - 모바일에서 숨김 (lg 이상에서만 노출) */}
-          <Link
-            className="btn btn-primary btn-md hidden px-6 font-black lg:inline-flex"
-            href="/order"
+          <Button
+            asChild
+            variant="default"
+            size="default"
+            className="hidden px-6 font-black lg:inline-flex"
           >
-            {t("order")}
-          </Link>
+            <Link href="/order">{t("order")}</Link>
+          </Button>
 
           {/* 햄버거 버튼 - 모바일 */}
-          <button
-            className="btn btn-ghost btn-square btn-md lg:hidden"
+          <Button
+            variant="ghost"
+            size="icon"
+            className="lg:hidden"
+            aria-expanded={isOpen}
+            aria-controls="mobile-navigation"
             onClick={() => setIsOpen(!isOpen)}
             aria-label={t("home")}
           >
@@ -112,46 +138,58 @@ export function SiteHeader() {
                 d={isOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"}
               />
             </svg>
-          </button>
+          </Button>
         </div>
       </ContainerWrapper>
 
-      {/* 모바일 드롭다운 메뉴 - DaisyUI drawer 스타일 적용 */}
+      {/* 모바일 메뉴 */}
       <div
+        id="mobile-navigation"
+        inert={!isOpen}
+        aria-hidden={!isOpen}
         className={`overflow-hidden transition-all duration-300 ease-in-out lg:hidden ${
           isOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
         }`}
       >
-        <div className="border-t border-base-content/10 bg-base-100/95 backdrop-blur-xl">
+        <div className="border-t border-foreground/10 bg-background/95 backdrop-blur-xl">
           <ContainerWrapper className="py-4">
             <nav className="flex flex-col gap-2" aria-label={t("home")}>
               {navItems.map((item) => (
-                <Link
+                <Button
                   key={item.href}
-                  className="btn btn-ghost justify-start rounded-field text-base-content/70"
-                  href={item.href}
-                  onClick={() => setIsOpen(false)}
+                  asChild
+                  variant="ghost"
+                  size="default"
+                  className="justify-start rounded-full text-foreground/70"
                 >
-                  {item.label}
-                </Link>
+                  <Link href={item.href} onClick={() => setIsOpen(false)}>
+                    {item.label}
+                  </Link>
+                </Button>
               ))}
 
               {/* 모바일 메뉴 안에 버튼들 */}
-              <div className="mt-2 flex flex-col gap-3 border-t border-base-content/10 pt-4 px-4">
-                <Link
-                  className="btn btn-outline btn-md justify-start border-base-content/25 text-base-content/80"
-                  href="/lookup"
-                  onClick={() => setIsOpen(false)}
+              <div className="mt-2 flex flex-col gap-3 border-t border-foreground/10 pt-4 px-4">
+                <Button
+                  asChild
+                  variant="outline"
+                  size="default"
+                  className="justify-start border-foreground/25 text-foreground/80"
                 >
-                  {t("lookup")}
-                </Link>
-                <Link
-                  className="btn btn-primary btn-md justify-start font-black"
-                  href="/order"
-                  onClick={() => setIsOpen(false)}
+                  <Link href="/lookup" onClick={() => setIsOpen(false)}>
+                    {t("lookup")}
+                  </Link>
+                </Button>
+                <Button
+                  asChild
+                  variant="default"
+                  size="default"
+                  className="justify-start font-black"
                 >
-                  {t("order")}
-                </Link>
+                  <Link href="/order" onClick={() => setIsOpen(false)}>
+                    {t("order")}
+                  </Link>
+                </Button>
               </div>
             </nav>
           </ContainerWrapper>

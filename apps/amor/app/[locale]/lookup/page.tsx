@@ -1,4 +1,11 @@
 "use client";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { LoaderCircle } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
@@ -70,10 +77,16 @@ export default function LookUpPage() {
 
   const statusMeta = (status?: GuestOrder["status"]) =>
     ({
-      pending: { label: t("pending"), className: "badge-warning" },
-      confirmed: { label: t("confirmed"), className: "badge-success" },
-      canceled: { label: t("canceled"), className: "badge-error" },
-    })[status] || { label: status || t("checkingStatus"), className: "badge-ghost" };
+      pending: { label: t("pending"), className: "bg-warning text-background" },
+      confirmed: {
+        label: t("confirmed"),
+        className: "bg-success text-background",
+      },
+      canceled: { label: t("canceled"), className: "bg-error text-background" },
+    })[status] || {
+      label: status || t("checkingStatus"),
+      className: "bg-muted text-foreground",
+    };
 
   const renderOrders = (ordersData: GuestOrder[]) => {
     if (!ordersData.length) {
@@ -123,11 +136,11 @@ export default function LookUpPage() {
         },
       );
 
-      const result = (await response.json().catch(() => ({}))) as LookupResponse;
+      const result = (await response
+        .json()
+        .catch(() => ({}))) as LookupResponse;
       if (!response.ok || !result.ok) {
-        throw new Error(
-          result.error || result.message || t("lookupFailed"),
-        );
+        throw new Error(result.error || result.message || t("lookupFailed"));
       }
 
       renderOrders(result.orders || []);
@@ -146,7 +159,7 @@ export default function LookUpPage() {
 
   return (
     <>
-      <div className="min-h-screen bg-base-100">
+      <div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 py-8 md:py-12 max-w-6xl">
           {/* Page Head */}
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-12">
@@ -158,69 +171,84 @@ export default function LookUpPage() {
                 {t("title")}
               </h1>
             </div>
-            <p className="text-base-content/60 text-sm max-w-sm">
+            <p className="text-foreground/60 text-sm max-w-sm">
               {t("description")}
             </p>
           </div>
 
           {/* Lookup Form */}
-          <div className="card bg-base-200 border border-base-300 shadow-xl">
-            <form onSubmit={handleSubmit} className="card-body gap-6">
+          <Card className="bg-card border border-muted shadow-xl">
+            <form
+              onSubmit={handleSubmit}
+              className="flex flex-col gap-2 p-8 gap-6"
+            >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="form-control">
-                  <label className="label">
-                    <span className="label-text font-bold">{t("buyerName")}</span>
-                  </label>
-                  <input
+                <div className="flex flex-col">
+                  <Label htmlFor="buyerName" className="flex items-center py-2">
+                    <span className="text-sm font-bold">{t("buyerName")}</span>
+                  </Label>
+                  <Input
+                    id="buyerName"
                     type="text"
                     placeholder={t("namePlaceholder")}
-                    className="input input-bordered w-full focus:outline-none focus:ring-2 focus:ring-primary/20"
+                    className="w-full focus:outline-none focus:ring-2 focus:ring-primary/20"
                     value={buyerName}
                     onChange={(e) => setBuyerName(e.target.value)}
                     required
                   />
                 </div>
-                <div className="form-control">
-                  <label className="label">
-                    <span className="label-text font-bold">{t("buyerPhone")}</span>
-                  </label>
-                  <input
+                <div className="flex flex-col">
+                  <Label
+                    htmlFor="buyerPhone"
+                    className="flex items-center py-2"
+                  >
+                    <span className="text-sm font-bold">{t("buyerPhone")}</span>
+                  </Label>
+                  <Input
+                    id="buyerPhone"
                     type="tel"
                     placeholder="010-0000-0000"
-                    className="input input-bordered w-full focus:outline-none focus:ring-2 focus:ring-primary/20"
+                    className="w-full focus:outline-none focus:ring-2 focus:ring-primary/20"
                     value={buyerPhone}
                     onChange={(e) => setBuyerPhone(e.target.value)}
                     required
                   />
                 </div>
               </div>
-              <div className="form-control">
-                <button
+              <div className="flex flex-col">
+                <Button
+                  variant="default"
+                  size="default"
                   type="submit"
-                  className="btn btn-primary btn-block"
+                  className="w-full"
                   disabled={isLoading}
                 >
                   {isLoading ? (
                     <>
-                      <span className="loading loading-spinner loading-sm"></span>
+                      <LoaderCircle
+                        aria-hidden="true"
+                        className="animate-spin size-4"
+                      />
                       {t("loading")}
                     </>
                   ) : (
                     t("submit")
                   )}
-                </button>
+                </Button>
               </div>
             </form>
 
             {/* Result Area */}
-            <div className="card-body border-t border-base-300 pt-6">
+            <CardContent className="border-t border-muted pt-6">
               {message && (
-                <div
+                <Alert
                   role="alert"
-                  className={`alert ${message.type === "error" ? "alert-error" : message.type === "warning" ? "alert-warning" : "alert-info"} shadow-lg`}
+                  className={`${message.type === "error" ? "border-error/30 bg-error/10 text-error" : message.type === "warning" ? "border-warning/30 bg-warning/10 text-warning" : "border-info/30 bg-info/10 text-info"} shadow-lg`}
                 >
-                  <span>{message.text}</span>
-                </div>
+                  <AlertDescription className="text-inherit">
+                    {message.text}
+                  </AlertDescription>
+                </Alert>
               )}
 
               {orders.length > 0 && (
@@ -234,46 +262,50 @@ export default function LookUpPage() {
                         (payload.durationMonths || 1);
 
                     return (
-                      <div
+                      <Card
                         key={order.id}
-                        className="card bg-base-100 border border-base-300 shadow-md"
+                        className="bg-background border border-muted shadow-md"
                       >
-                        <div className="card-body p-4 sm:p-6">
+                        <CardContent className="p-4 sm:p-6">
                           <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
                             <div>
                               <div className="text-primary font-black text-base sm:text-lg">
                                 {payload.programName || t("defaultProgram")}
                               </div>
-                              <div className="text-base-content/40 text-xs mt-1">
+                              <div className="text-foreground/40 text-xs mt-1">
                                 {t("orderNumber", { id: order.id || "-" })}
                               </div>
                             </div>
-                            <div
-                              className={`badge ${status.className} badge-lg font-bold border-0`}
+                            <Badge
+                              className={`${status.className} px-3 py-1 text-sm font-bold border-0`}
                             >
                               {status.label}
-                            </div>
+                            </Badge>
                           </div>
 
                           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                            <div className="bg-base-200 rounded-box p-3">
-                              <div className="text-base-content/40 text-xs font-extrabold">
+                            <div className="bg-card rounded-lg p-3">
+                              <div className="text-foreground/40 text-xs font-extrabold">
                                 {t("paymentAmount")}
                               </div>
                               <div className="font-black text-sm">
                                 {formatPrice(totalPrice)}
                               </div>
                             </div>
-                            <div className="bg-base-200 rounded-box p-3">
-                              <div className="text-base-content/40 text-xs font-extrabold">
+                            <div className="bg-card rounded-lg p-3">
+                              <div className="text-foreground/40 text-xs font-extrabold">
                                 {t("duration")}
                               </div>
                               <div className="font-black text-sm">
-                                {payload.durationMonths ? t("months", { count: payload.durationMonths }) : "-"}
+                                {payload.durationMonths
+                                  ? t("months", {
+                                      count: payload.durationMonths,
+                                    })
+                                  : "-"}
                               </div>
                             </div>
-                            <div className="bg-base-200 rounded-box p-3">
-                              <div className="text-base-content/40 text-xs font-extrabold">
+                            <div className="bg-card rounded-lg p-3">
+                              <div className="text-foreground/40 text-xs font-extrabold">
                                 {t("orderedAt")}
                               </div>
                               <div className="font-black text-sm">
@@ -281,14 +313,14 @@ export default function LookUpPage() {
                               </div>
                             </div>
                           </div>
-                        </div>
-                      </div>
+                        </CardContent>
+                      </Card>
                     );
                   })}
                 </div>
               )}
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </>

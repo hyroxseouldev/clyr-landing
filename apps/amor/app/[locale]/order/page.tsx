@@ -1,4 +1,17 @@
 "use client";
+import { Checkbox } from "@/components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { LoaderCircle } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import {
+  NativeSelect,
+  NativeSelectOption,
+} from "@/components/ui/native-select";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
@@ -64,11 +77,30 @@ const formatPrice = (value: number, locale: string) =>
     maximumFractionDigits: 0,
   }).format(value || 0);
 
-const englishProgramCopy: Record<string, { title: string; description: string }> = {
-  "06a42964-2aa4-4287-a724-32fb8526e2df": { title: "Fundamentals: 4 weeks", description: "A foundational running and station-integrated class. Includes one in-person meeting and lesson in the final week." },
-  "0d925d9f-bdb1-4e34-ae70-5609faa20983": { title: "Race preparation", description: "A four-week class with four running and station sessions each week, plus two in-person training sessions and meetings." },
-  "8f81d9f1-8559-4fd8-bbe9-c49779770461": { title: "Running class", description: "A four-week class with three or four sessions each week, adjusted to your running level and training intensity." },
-  "c881344f-267c-4aa4-ad49-008e4275ec1f": { title: "HYROX stations", description: "A four-week class with three sessions each week, using station-specific training to strengthen your weaker areas." },
+const englishProgramCopy: Record<
+  string,
+  { title: string; description: string }
+> = {
+  "06a42964-2aa4-4287-a724-32fb8526e2df": {
+    title: "Fundamentals: 4 weeks",
+    description:
+      "A foundational running and station-integrated class. Includes one in-person meeting and lesson in the final week.",
+  },
+  "0d925d9f-bdb1-4e34-ae70-5609faa20983": {
+    title: "Race preparation",
+    description:
+      "A four-week class with four running and station sessions each week, plus two in-person training sessions and meetings.",
+  },
+  "8f81d9f1-8559-4fd8-bbe9-c49779770461": {
+    title: "Running class",
+    description:
+      "A four-week class with three or four sessions each week, adjusted to your running level and training intensity.",
+  },
+  "c881344f-267c-4aa4-ad49-008e4275ec1f": {
+    title: "HYROX stations",
+    description:
+      "A four-week class with three sessions each week, using station-specific training to strengthen your weaker areas.",
+  },
 };
 
 const localizeProgram = (program: Program, locale: string) =>
@@ -177,20 +209,14 @@ export default function OrderPageClient() {
 
       const result = (await response.json().catch(() => ({}))) as OrderResponse;
       if (!response.ok || !result.ok) {
-        throw new Error(
-          result.error || result.message || t("createFailed"),
-        );
+        throw new Error(result.error || result.message || t("createFailed"));
       }
 
-      alert(
-        t("completedAlert", bankAccount),
-      );
+      alert(t("completedAlert", bankAccount));
       window.location.href = `/${locale}`;
     } catch (error) {
       const errorMessage =
-        error instanceof Error
-          ? error.message
-          : t("unknownError");
+        error instanceof Error ? error.message : t("unknownError");
       alert(`${t("error")}\n${errorMessage}`);
     } finally {
       setIsLoading(false);
@@ -230,7 +256,10 @@ export default function OrderPageClient() {
   if (!selectedProgram || !selectedDuration) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <span className="loading loading-spinner loading-lg text-primary"></span>
+        <LoaderCircle
+          aria-hidden="true"
+          className="animate-spin size-8 text-primary"
+        />
       </div>
     );
   }
@@ -248,7 +277,7 @@ export default function OrderPageClient() {
   };
 
   return (
-    <div className="min-h-screen bg-base-100 text-base-content">
+    <div className="min-h-screen bg-background text-foreground">
       <div className="container mx-auto px-4 py-8 md:py-12 max-w-6xl">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-8">
@@ -258,7 +287,7 @@ export default function OrderPageClient() {
             </span>
             <h1 className="text-3xl md:text-4xl font-bold">{t("title")}</h1>
           </div>
-          <p className="text-sm text-base-content/60 max-w-md">
+          <p className="text-sm text-foreground/60 max-w-md">
             {t("description")}
           </p>
         </div>
@@ -270,13 +299,15 @@ export default function OrderPageClient() {
           {/* Main Form - 2 columns */}
           <div className="lg:col-span-2 space-y-6">
             {/* Program Selection */}
-            <div className="card bg-base-200 shadow-xl border border-base-300">
-              <div className="card-body">
-                <h2 className="card-title text-lg">{t("programInfo")}</h2>
+            <Card className="bg-card shadow-xl border border-muted">
+              <CardContent>
+                <h2 className="flex items-center gap-2 font-semibold text-lg">
+                  {t("programInfo")}
+                </h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <figure className="aspect-square rounded-xl overflow-hidden bg-base-300 relative">
+                    <figure className="aspect-square rounded-xl overflow-hidden bg-muted relative">
                       <Image
                         src={selectedProgram.thumbnail_url}
                         alt={summaryProgram.title}
@@ -289,43 +320,51 @@ export default function OrderPageClient() {
 
                   <div className="space-y-4">
                     {/* Program Select */}
-                    <div className="form-control">
-                      <label className="label pb-2">
-                        <span className="label-text font-semibold">
+                    <div className="flex flex-col">
+                      <Label
+                        htmlFor="program"
+                        className="flex items-center py-2 pb-2"
+                      >
+                        <span className="text-sm font-semibold">
                           {t("programSelect")}
                         </span>
-                      </label>
-                      <select
-                        className="select select-bordered w-full"
+                      </Label>
+                      <NativeSelect
+                        id="program"
+                        className="w-full"
                         value={selectedProgram.id}
                         onChange={(e) => handleProgramChange(e.target.value)}
                       >
                         {sortedPrograms.map((p) => (
-                          <option key={p.id} value={p.id}>
+                          <NativeSelectOption key={p.id} value={p.id}>
                             {localizeProgram(p, locale).title}
-                          </option>
+                          </NativeSelectOption>
                         ))}
-                      </select>
+                      </NativeSelect>
                     </div>
 
                     <div>
                       <h3 className="text-primary font-bold text-sm tracking-wide uppercase">
                         {summaryProgram.title}
                       </h3>
-                      <p className="text-sm text-base-content/70 mt-1 whitespace-pre-line">
+                      <p className="text-sm text-foreground/70 mt-1 whitespace-pre-line">
                         {summaryProgram.description}
                       </p>
                     </div>
 
                     {/* Duration Select */}
-                    <div className="form-control">
-                      <label className="label pb-2">
-                        <span className="label-text font-semibold">
+                    <div className="flex flex-col">
+                      <Label
+                        htmlFor="duration"
+                        className="flex items-center py-2 pb-2"
+                      >
+                        <span className="text-sm font-semibold">
                           {t("duration")}
                         </span>
-                      </label>
-                      <select
-                        className="select select-bordered w-full"
+                      </Label>
+                      <NativeSelect
+                        id="duration"
+                        className="w-full"
                         value={durations.findIndex(
                           (d) =>
                             d.duration_months ===
@@ -336,259 +375,309 @@ export default function OrderPageClient() {
                         }
                       >
                         {durations.map((d, idx) => (
-                          <option key={idx} value={idx}>
-                            {t("months", { count: d.duration_months })} · {formatPrice(d.price_krw, locale)}
-                          </option>
+                          <NativeSelectOption key={idx} value={idx}>
+                            {t("months", { count: d.duration_months })} ·{" "}
+                            {formatPrice(d.price_krw, locale)}
+                          </NativeSelectOption>
                         ))}
-                      </select>
+                      </NativeSelect>
                     </div>
 
                     {/* Stats */}
                     <div className="grid grid-cols-3 gap-2">
-                      <div className="bg-base-300/30 rounded-xl p-3 text-center">
-                        <div className="text-xs text-base-content/50 font-semibold">
+                      <div className="bg-muted/30 rounded-xl p-3 text-center">
+                        <div className="text-xs text-foreground/50 font-semibold">
                           {t("difficulty")}
                         </div>
                         <div className="text-sm font-bold">
                           {difficultyLabel(selectedProgram.difficulty)}
                         </div>
                       </div>
-                      <div className="bg-base-300/30 rounded-xl p-3 text-center">
-                        <div className="text-xs text-base-content/50 font-semibold">
+                      <div className="bg-muted/30 rounded-xl p-3 text-center">
+                        <div className="text-xs text-foreground/50 font-semibold">
                           {t("weeklyTraining")}
                         </div>
                         <div className="text-sm font-bold">
-                          {t("weeklyValue", { count: displayValue(selectedProgram.days_per_week) })}
+                          {t("weeklyValue", {
+                            count: displayValue(selectedProgram.days_per_week),
+                          })}
                         </div>
                       </div>
-                      <div className="bg-base-300/30 rounded-xl p-3 text-center">
-                        <div className="text-xs text-base-content/50 font-semibold">
+                      <div className="bg-muted/30 rounded-xl p-3 text-center">
+                        <div className="text-xs text-foreground/50 font-semibold">
                           {t("dailyDuration")}
                         </div>
                         <div className="text-sm font-bold">
-                          {t("minutes", { count: displayValue(selectedProgram.daily_workout_minutes) })}
+                          {t("minutes", {
+                            count: displayValue(
+                              selectedProgram.daily_workout_minutes,
+                            ),
+                          })}
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
 
             {/* Buyer Information */}
-            <div className="card bg-base-200 shadow-xl border border-base-300">
-              <div className="card-body">
-                <h2 className="card-title text-lg">{t("buyerInfo")}</h2>
+            <Card className="bg-card shadow-xl border border-muted">
+              <CardContent>
+                <h2 className="flex items-center gap-2 font-semibold text-lg">
+                  {t("buyerInfo")}
+                </h2>
 
                 <div className="space-y-5">
-                  <div className="form-control">
-                    <label className="label pb-2">
-                        <span className="label-text font-semibold">{t("buyerName")}</span>
-                    </label>
-                    <input
+                  <div className="flex flex-col">
+                    <Label
+                      htmlFor="buyerName"
+                      className="flex items-center py-2 pb-2"
+                    >
+                      <span className="text-sm font-semibold">
+                        {t("buyerName")}
+                      </span>
+                    </Label>
+                    <Input
                       type="text"
                       id="buyerName"
                       name="buyerName"
-                      className="input input-bordered w-full"
+                      className="w-full"
                       placeholder={t("namePlaceholder")}
                       required
                       autoComplete="name"
                     />
                   </div>
 
-                  <div className="form-control">
-                    <label className="label pb-2">
-                        <span className="label-text font-semibold">{t("buyerPhone")}</span>
-                    </label>
-                    <input
+                  <div className="flex flex-col">
+                    <Label
+                      htmlFor="buyerPhone"
+                      className="flex items-center py-2 pb-2"
+                    >
+                      <span className="text-sm font-semibold">
+                        {t("buyerPhone")}
+                      </span>
+                    </Label>
+                    <Input
                       type="tel"
                       id="buyerPhone"
                       name="buyerPhone"
-                      className="input input-bordered w-full"
+                      className="w-full"
                       placeholder="010-0000-0000"
                       required
                       autoComplete="tel"
                     />
                   </div>
 
-                  <div className="form-control">
-                    <label className="label pb-2">
-                        <span className="label-text font-semibold">{t("email")}</span>
-                    </label>
-                    <input
+                  <div className="flex flex-col">
+                    <Label
+                      htmlFor="buyerEmail"
+                      className="flex items-center py-2 pb-2"
+                    >
+                      <span className="text-sm font-semibold">
+                        {t("email")}
+                      </span>
+                    </Label>
+                    <Input
                       type="email"
                       id="buyerEmail"
                       name="buyerEmail"
-                      className="input input-bordered w-full"
+                      className="w-full"
                       placeholder="amor@example.com"
                       required
                       autoComplete="email"
                     />
                   </div>
 
-                  <div className="form-control">
-                    <label className="label pb-2">
-                      <span className="label-text font-semibold">
-                          {t("goal")}
-                      </span>
-                    </label>
-                    <textarea
+                  <div className="flex flex-col">
+                    <Label
+                      htmlFor="goal"
+                      className="flex items-center py-2 pb-2"
+                    >
+                      <span className="text-sm font-semibold">{t("goal")}</span>
+                    </Label>
+                    <Textarea
                       id="goal"
                       name="goal"
-                      className="textarea textarea-bordered w-full min-h-[100px]"
+                      className="w-full min-h-[100px]"
                       placeholder={t("goalPlaceholder")}
-                    ></textarea>
+                    ></Textarea>
                   </div>
                 </div>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
 
             {/* Payment Method */}
-            <div className="card bg-base-200 shadow-xl border border-base-300">
-              <div className="card-body">
-                <h2 className="card-title text-lg">{t("paymentMethod")}</h2>
+            <Card className="bg-card shadow-xl border border-muted">
+              <CardContent>
+                <h2 className="flex items-center gap-2 font-semibold text-lg">
+                  {t("paymentMethod")}
+                </h2>
 
-                <div className="space-y-3">
-                  <label className="flex items-center gap-4 p-4 border border-base-300 rounded-xl bg-base-300/20 hover:bg-base-300/30 transition cursor-pointer">
-                    <input
-                      type="radio"
-                      name="paymentMethod"
+                <RadioGroup
+                  name="paymentMethod"
+                  defaultValue="bank"
+                  className="space-y-3"
+                >
+                  <Label
+                    htmlFor="payment-card"
+                    className="flex items-center gap-4 p-4 border border-muted rounded-xl bg-muted/20 hover:bg-muted/30 transition cursor-pointer"
+                  >
+                    <RadioGroupItem
+                      id="payment-card"
                       value="card"
                       disabled
-                      className="radio radio-primary"
+                      className="size-5"
                     />
                     <div>
                       <div className="font-bold">{t("card")}</div>
-                      <div className="text-xs text-base-content/50">
+                      <div className="text-xs text-foreground/50">
                         {t("cardComingSoon")}
                       </div>
                     </div>
-                  </label>
+                  </Label>
 
-                  <label className="flex items-center gap-4 p-4 border border-base-300 rounded-xl bg-base-300/20 hover:bg-base-300/30 transition cursor-pointer">
-                    <input
-                      type="radio"
-                      name="paymentMethod"
+                  <Label
+                    htmlFor="payment-kakao"
+                    className="flex items-center gap-4 p-4 border border-muted rounded-xl bg-muted/20 hover:bg-muted/30 transition cursor-pointer"
+                  >
+                    <RadioGroupItem
+                      id="payment-kakao"
                       value="kakao"
                       disabled
-                      className="radio radio-primary"
+                      className="size-5"
                     />
                     <div>
                       <div className="font-bold">{t("kakaoPay")}</div>
-                      <div className="text-xs text-base-content/50">
+                      <div className="text-xs text-foreground/50">
                         {t("kakaoPayComingSoon")}
                       </div>
                     </div>
-                  </label>
+                  </Label>
 
-                  <label className="flex items-center gap-4 p-4 border-2 border-primary/30 rounded-xl bg-primary/5 hover:bg-primary/10 transition cursor-pointer">
-                    <input
-                      type="radio"
-                      name="paymentMethod"
+                  <Label
+                    htmlFor="payment-bank"
+                    className="flex items-center gap-4 p-4 border-2 border-primary/30 rounded-xl bg-primary/5 hover:bg-primary/10 transition cursor-pointer"
+                  >
+                    <RadioGroupItem
+                      id="payment-bank"
                       value="bank"
-                      defaultChecked
-                      className="radio radio-primary"
+                      className="size-5"
                     />
                     <div>
                       <div className="font-bold">{t("bankTransfer")}</div>
-                      <div className="text-xs text-base-content/50">
-                      {bankAccount.bankName} {bankAccount.accountNumber} · {bankAccount.holderName}
+                      <div className="text-xs text-foreground/50">
+                        {bankAccount.bankName} {bankAccount.accountNumber} ·{" "}
+                        {bankAccount.holderName}
                       </div>
                     </div>
-                  </label>
+                  </Label>
+                </RadioGroup>
 
-                  <div className="bg-primary/10 border border-primary/20 rounded-xl p-4">
-                    <div className="text-xs font-bold text-primary/70">
-                      {t("account")}
-                    </div>
-                    <div className="font-bold text-base">
-                      {bankAccount.bankName} {bankAccount.accountNumber}
-                    </div>
-                    <div className="text-xs text-base-content/50">
-                      {t("accountHolder", { name: bankAccount.holderName })}
-                    </div>
+                <div className="bg-primary/10 border border-primary/20 rounded-xl p-4">
+                  <div className="text-xs font-bold text-primary/70">
+                    {t("account")}
+                  </div>
+                  <div className="font-bold text-base">
+                    {bankAccount.bankName} {bankAccount.accountNumber}
+                  </div>
+                  <div className="text-xs text-foreground/50">
+                    {t("accountHolder", { name: bankAccount.holderName })}
                   </div>
                 </div>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           </div>
 
           {/* Summary - 1 column */}
           <div className="lg:col-span-1">
-            <div className="card bg-base-200 shadow-xl border border-base-300 sticky top-24">
-              <div className="card-body">
-                <h2 className="card-title text-lg">{t("summary")}</h2>
+            <Card className="bg-card shadow-xl border border-muted sticky top-24">
+              <CardContent>
+                <h2 className="flex items-center gap-2 font-semibold text-lg">
+                  {t("summary")}
+                </h2>
 
                 <div className="space-y-2 text-sm">
                   <div className="text-primary font-bold tracking-wide uppercase">
                     {summaryProgram.title}
                   </div>
-                  <p className="text-base-content/60 text-xs">
+                  <p className="text-foreground/60 text-xs">
                     {summaryProgram.description}
                   </p>
                 </div>
 
-                <div className="divider"></div>
+                <Separator className="my-4"></Separator>
 
                 <div className="space-y-3">
                   <div className="flex justify-between">
-                    <span className="text-base-content/60">{t("duration")}</span>
+                    <span className="text-foreground/60">{t("duration")}</span>
                     <span className="font-bold">
                       {t("months", { count: summaryDuration.duration_months })}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-base-content/60">{t("coach")}</span>
+                    <span className="text-foreground/60">{t("coach")}</span>
                     <span className="font-bold">
-                      {locale === "en" ? "Junhyun Jeon" : summaryProgram.coach_name || "전준현"}
+                      {locale === "en"
+                        ? "Junhyun Jeon"
+                        : summaryProgram.coach_name || "전준현"}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-base-content/60">{t("account")}</span>
+                    <span className="text-foreground/60">{t("account")}</span>
                     <span className="font-bold text-xs">
                       {bankAccount.bankName} {bankAccount.accountNumber}
                     </span>
                   </div>
                 </div>
 
-                <div className="divider"></div>
+                <Separator className="my-4"></Separator>
 
                 <div className="flex justify-between items-center">
-                  <span className="text-base-content/60">{t("paymentAmount")}</span>
+                  <span className="text-foreground/60">
+                    {t("paymentAmount")}
+                  </span>
                   <span className="text-3xl font-bold text-primary">
                     {formatPrice(summaryDuration.price_krw, locale)}
                   </span>
                 </div>
 
-                <div className="form-control mt-2">
-                  <label className="label cursor-pointer justify-start gap-3">
-                    <input
-                      type="checkbox"
-                      className="checkbox checkbox-primary"
+                <div className="flex flex-col mt-2">
+                  <Label
+                    htmlFor="agreement"
+                    className="flex items-center py-2 cursor-pointer justify-start gap-3"
+                  >
+                    <Checkbox
+                      id="agreement"
+                      name="agreement"
                       required
+                      className="size-5"
                     />
-                    <span className="label-text text-xs">
-                      {t("agreement")}
-                    </span>
-                  </label>
+                    <span className="text-sm text-xs">{t("agreement")}</span>
+                  </Label>
                 </div>
 
-                <button
+                <Button
+                  variant="default"
+                  size="default"
                   type="submit"
-                  className="btn btn-primary w-full rounded-full font-bold mt-2"
+                  className="w-full rounded-full font-bold mt-2"
                   disabled={isLoading}
                 >
                   {isLoading ? (
                     <>
-                      <span className="loading loading-spinner"></span>
+                      <LoaderCircle
+                        aria-hidden="true"
+                        className="animate-spin size-4"
+                      />
                       {t("processing")}
                     </>
                   ) : (
                     t("submit")
                   )}
-                </button>
-              </div>
-            </div>
+                </Button>
+              </CardContent>
+            </Card>
           </div>
         </form>
       </div>
