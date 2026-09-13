@@ -3,13 +3,12 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { LoaderCircle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { assertPublicSupabaseEnv, supabaseUrl, tenantId } from "@/env";
+import { PhoneVerification } from "@/components/auth/phone-verification";
+import { useSession } from "@/auth/client";
 
 type MessageType = "info" | "warning" | "error";
 
@@ -19,6 +18,7 @@ interface LookupMessage {
 }
 
 interface GuestOrderPayload {
+  bankAccount?: import("@/orders/bank-account").BankAccount;
   programName?: string;
   totalPriceKrw?: number;
   monthlyPriceKrw?: number;
@@ -42,18 +42,14 @@ interface LookupResponse {
 export default function LookUpPage() {
   const locale = useLocale();
   const t = useTranslations("Lookup");
-  const [buyerName, setBuyerName] = useState("");
-  const [buyerPhone, setBuyerPhone] = useState("");
+  const { data: session } = useSession();
   const [isLoading, setIsLoading] = useState(false);
+  const [resultsFor, setResultsFor] = useState("");
   const [orders, setOrders] = useState<GuestOrder[]>([]);
   const [message, setMessage] = useState<LookupMessage>({
     type: "info",
     text: t("initialMessage"),
   });
-
-  useEffect(() => {
-    assertPublicSupabaseEnv();
-  }, []);
 
   const formatPrice = (value: number) =>
     new Intl.NumberFormat(locale === "en" ? "en-US" : "ko-KR", {
@@ -83,7 +79,7 @@ export default function LookUpPage() {
         className: "bg-success text-background",
       },
       canceled: { label: t("canceled"), className: "bg-error text-background" },
-    })[status] || {
+    })[status || ""] || {
       label: status || t("checkingStatus"),
       className: "bg-muted text-foreground",
     };
@@ -98,6 +94,7 @@ export default function LookUpPage() {
       return;
     }
 
+    setResultsFor(session?.user.id || "");
     setOrders(ordersData);
     setMessage({
       type: "info",
@@ -108,7 +105,7 @@ export default function LookUpPage() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!buyerName.trim() || !buyerPhone.trim()) {
+    if (!session?.user.phoneNumberVerified) {
       setMessage({
         type: "error",
         text: t("missingFields"),
@@ -121,20 +118,7 @@ export default function LookUpPage() {
     setOrders([]);
 
     try {
-      const response = await fetch(
-        `${supabaseUrl}/functions/v1/lookup-guest-orders`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            tenantId,
-            buyerName: buyerName.trim(),
-            buyerPhone: buyerPhone.trim(),
-          }),
-        },
-      );
+      const response = await fetch("/api/orders", { cache: "no-store" });
 
       const result = (await response
         .json()
@@ -182,46 +166,14 @@ export default function LookUpPage() {
               onSubmit={handleSubmit}
               className="flex flex-col gap-2 p-8 gap-6"
             >
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="flex flex-col">
-                  <Label htmlFor="buyerName" className="flex items-center py-2">
-                    <span className="text-sm font-bold">{t("buyerName")}</span>
-                  </Label>
-                  <Input
-                    id="buyerName"
-                    type="text"
-                    placeholder={t("namePlaceholder")}
-                    className="w-full focus:outline-none focus:ring-2 focus:ring-primary/20"
-                    value={buyerName}
-                    onChange={(e) => setBuyerName(e.target.value)}
-                    required
-                  />
-                </div>
-                <div className="flex flex-col">
-                  <Label
-                    htmlFor="buyerPhone"
-                    className="flex items-center py-2"
-                  >
-                    <span className="text-sm font-bold">{t("buyerPhone")}</span>
-                  </Label>
-                  <Input
-                    id="buyerPhone"
-                    type="tel"
-                    placeholder="010-0000-0000"
-                    className="w-full focus:outline-none focus:ring-2 focus:ring-primary/20"
-                    value={buyerPhone}
-                    onChange={(e) => setBuyerPhone(e.target.value)}
-                    required
-                  />
-                </div>
-              </div>
+              <PhoneVerification english={locale === "en"} />
               <div className="flex flex-col">
                 <Button
                   variant="default"
                   size="default"
                   type="submit"
                   className="w-full"
-                  disabled={isLoading}
+                  disabled={isLoading || !session?.user.phoneNumberVerified}
                 >
                   {isLoading ? (
                     <>
@@ -251,74 +203,84 @@ export default function LookUpPage() {
                 </Alert>
               )}
 
-              {orders.length > 0 && (
-                <div className="space-y-4 mt-6">
-                  {orders.map((order) => {
-                    const payload = order.order_payload || {};
-                    const status = statusMeta(order.status);
-                    const totalPrice =
-                      payload.totalPriceKrw ||
-                      (payload.monthlyPriceKrw || 0) *
-                        (payload.durationMonths || 1);
+              {session?.user.phoneNumberVerified &&
+                resultsFor === session.user.id &&
+                orders.length > 0 && (
+                  <div className="space-y-4 mt-6">
+                    {orders.map((order) => {
+                      const payload = order.order_payload || {};
+                      const status = statusMeta(order.status);
+                      const totalPrice =
+                        payload.totalPriceKrw ||
+                        (payload.monthlyPriceKrw || 0) *
+                          (payload.durationMonths || 1);
 
-                    return (
-                      <Card
-                        key={order.id}
-                        className="bg-background border border-muted shadow-md"
-                      >
-                        <CardContent className="p-4 sm:p-6">
-                          <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
-                            <div>
-                              <div className="text-primary font-black text-base sm:text-lg">
-                                {payload.programName || t("defaultProgram")}
+                      return (
+                        <Card
+                          key={order.id}
+                          className="bg-background border border-muted shadow-md"
+                        >
+                          <CardContent className="p-4 sm:p-6">
+                            <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
+                              <div>
+                                <div className="text-primary font-black text-base sm:text-lg">
+                                  {payload.programName || t("defaultProgram")}
+                                </div>
+                                <div className="text-foreground/40 text-xs mt-1">
+                                  {t("orderNumber", { id: order.id || "-" })}
+                                </div>
                               </div>
-                              <div className="text-foreground/40 text-xs mt-1">
-                                {t("orderNumber", { id: order.id || "-" })}
-                              </div>
+                              <Badge
+                                className={`${status.className} px-3 py-1 text-sm font-bold border-0`}
+                              >
+                                {status.label}
+                              </Badge>
                             </div>
-                            <Badge
-                              className={`${status.className} px-3 py-1 text-sm font-bold border-0`}
-                            >
-                              {status.label}
-                            </Badge>
-                          </div>
 
-                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                            <div className="bg-card rounded-lg p-3">
-                              <div className="text-foreground/40 text-xs font-extrabold">
-                                {t("paymentAmount")}
+                            {payload.bankAccount && (
+                              <p className="mb-4 text-sm text-muted-foreground">
+                                {locale === "en" ? "Bank account" : "입금 계좌"}{" "}
+                                · {payload.bankAccount.bankName}{" "}
+                                {payload.bankAccount.accountNumber} ·{" "}
+                                {payload.bankAccount.holderName}
+                              </p>
+                            )}
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                              <div className="bg-card rounded-lg p-3">
+                                <div className="text-foreground/40 text-xs font-extrabold">
+                                  {t("paymentAmount")}
+                                </div>
+                                <div className="font-black text-sm">
+                                  {formatPrice(totalPrice)}
+                                </div>
                               </div>
-                              <div className="font-black text-sm">
-                                {formatPrice(totalPrice)}
+                              <div className="bg-card rounded-lg p-3">
+                                <div className="text-foreground/40 text-xs font-extrabold">
+                                  {t("duration")}
+                                </div>
+                                <div className="font-black text-sm">
+                                  {payload.durationMonths
+                                    ? t("months", {
+                                        count: payload.durationMonths,
+                                      })
+                                    : "-"}
+                                </div>
+                              </div>
+                              <div className="bg-card rounded-lg p-3">
+                                <div className="text-foreground/40 text-xs font-extrabold">
+                                  {t("orderedAt")}
+                                </div>
+                                <div className="font-black text-sm">
+                                  {formatDate(order.created_at)}
+                                </div>
                               </div>
                             </div>
-                            <div className="bg-card rounded-lg p-3">
-                              <div className="text-foreground/40 text-xs font-extrabold">
-                                {t("duration")}
-                              </div>
-                              <div className="font-black text-sm">
-                                {payload.durationMonths
-                                  ? t("months", {
-                                      count: payload.durationMonths,
-                                    })
-                                  : "-"}
-                              </div>
-                            </div>
-                            <div className="bg-card rounded-lg p-3">
-                              <div className="text-foreground/40 text-xs font-extrabold">
-                                {t("orderedAt")}
-                              </div>
-                              <div className="font-black text-sm">
-                                {formatDate(order.created_at)}
-                              </div>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    );
-                  })}
-                </div>
-              )}
+                          </CardContent>
+                        </Card>
+                      );
+                    })}
+                  </div>
+                )}
             </CardContent>
           </Card>
         </div>

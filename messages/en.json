@@ -68,14 +68,14 @@
   },
   "Lookup": {
     "title": "Check your order",
-    "description": "Enter the name and phone number used when placing your order.",
+    "description": "Verify the mobile number used for your order to view your orders.",
     "buyerName": "Name",
     "buyerPhone": "Phone number",
     "namePlaceholder": "Jane Doe",
     "submit": "Check order",
     "loading": "Checking...",
-    "initialMessage": "Enter the name and phone number used for your order.",
-    "missingFields": "Enter both your name and phone number.",
+    "initialMessage": "Verify your phone, then look up your orders.",
+    "missingFields": "Please verify your phone first.",
     "searching": "Looking up your order history.",
     "notFound": "No matching orders were found. Check your name and phone number, then try again.",
     "found": "Found {count} order(s).",
@@ -107,9 +107,18 @@
     "title": "Frequently asked questions",
     "description": "Answers to the questions we hear most about AMOR LAB.",
     "items": [
-      {"q": "Q. Can I train at a regular gym without HYROX equipment?", "a": "Yes. We build substitute WODs around dumbbells, barbells and treadmills to develop the abilities HYROX requires."},
-      {"q": "Q. Can a complete beginner follow the program?", "a": "Absolutely. We adjust the plan to your current fitness level and build from the fundamentals without rushing."},
-      {"q": "Q. How does feedback work?", "a": "Upload how your workout felt and the coach will provide form and pacing feedback within 48 hours."}
+      {
+        "q": "Q. Can I train at a regular gym without HYROX equipment?",
+        "a": "Yes. We build substitute WODs around dumbbells, barbells and treadmills to develop the abilities HYROX requires."
+      },
+      {
+        "q": "Q. Can a complete beginner follow the program?",
+        "a": "Absolutely. We adjust the plan to your current fitness level and build from the fundamentals without rushing."
+      },
+      {
+        "q": "Q. How does feedback work?",
+        "a": "Upload how your workout felt and the coach will provide form and pacing feedback within 48 hours."
+      }
     ]
   },
   "Pricing": {
@@ -126,7 +135,11 @@
     "eyebrow": "PROBLEM",
     "title": "Running well is not enough.\nStrength alone will not solve it.",
     "description": "HYROX is more than a fitness test.\nIt is the science of transitions and pacing.",
-    "questions": ["Do you lose your pace when switching from running to functional work?", "Are you stuck without a structured HYROX-specific routine?", "Does your time fall apart on Wall Ball Shots late in the race?"],
+    "questions": [
+      "Do you lose your pace when switching from running to functional work?",
+      "Are you stuck without a structured HYROX-specific routine?",
+      "Does your time fall apart on Wall Ball Shots late in the race?"
+    ],
     "insight": "💡 Key insight — HYROX is the science of disciplined transitions and pacing, not just fitness.",
     "balance": "The balance between training load and recovery\nis the critical point that decides your record."
   },

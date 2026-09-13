@@ -13,12 +13,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { sortedPrograms } from "@/data/program-catalog";
 import type { Program } from "@/data/programs";
-import { assertPublicSupabaseEnv, supabaseUrl, tenantId } from "@/env";
+import { PhoneVerification } from "@/components/auth/phone-verification";
+import { useSession } from "@/auth/client";
+import type { BankAccount } from "@/orders/bank-account";
 import { EARLY_BIRD_END_AT_MS, getProgramPricing } from "@/pricing";
 
 interface Duration {
@@ -31,28 +33,8 @@ interface Duration {
   regular_total_price_krw?: number;
 }
 
-interface OrderPayload {
-  programId: string;
-  programName: string;
-  storeName: string;
-  buyerEmail: string;
-  buyerGoal: string;
-  paymentMethod: string;
-  pricingPhase: string;
-  regularPriceKrw: number;
-  finalPriceKrw: number;
-  regularTotalPriceKrw: number;
-  monthlyPriceKrw: number;
-  durationMonths: number;
-  totalPriceKrw: number;
-  bankAccount: {
-    bankName: string;
-    accountNumber: string;
-    holderName: string;
-  };
-}
-
 interface OrderResponse {
+  bankAccount?: BankAccount;
   ok?: boolean;
   error?: string;
   message?: string;
@@ -63,12 +45,6 @@ const durationOptions: Duration[] = [1, 2, 3].map((months) => ({
   price_krw: 0,
   is_enabled: true,
 }));
-
-const bankAccount = {
-  bankName: "국민은행",
-  accountNumber: "824001-04-091290",
-  holderName: "전준현",
-};
 
 const formatPrice = (value: number, locale: string) =>
   new Intl.NumberFormat(locale === "en" ? "en-US" : "ko-KR", {
@@ -131,11 +107,32 @@ const displayValue = (value?: string | number) => {
 
 export default function OrderPageClient() {
   const locale = useLocale();
+  const { data: session } = useSession();
+  const requestId = useRef<string | null>(null);
+  const phoneVerified = !!session?.user.phoneNumberVerified;
   const t = useTranslations("Order");
   const [selectedProgram, setSelectedProgram] = useState<Program | null>(null);
   const [selectedDuration, setSelectedDuration] = useState<Duration | null>(
     null,
   );
+  const [bankAccount, setBankAccount] = useState<
+    (BankAccount & { revision: string }) | null
+  >(null);
+  const [bankError, setBankError] = useState("");
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch("/api/bank-account", { cache: "no-store", signal: controller.signal })
+      .then(async (response) => {
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.message);
+        setBankAccount(result.bankAccount);
+      })
+      .catch((e) => {
+        if (!controller.signal.aborted)
+          setBankError(e.message || "입금 계좌를 불러오지 못했습니다.");
+      });
+    return () => controller.abort();
+  }, []);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleProgramChange = (programId: string) => {
@@ -161,7 +158,7 @@ export default function OrderPageClient() {
     const program = selectedProgram;
     const duration = selectedDuration;
 
-    if (!program || !duration) {
+    if (!program || !duration || !bankAccount) {
       alert(t("programUnavailable"));
       return;
     }
@@ -169,51 +166,34 @@ export default function OrderPageClient() {
     setIsLoading(true);
 
     try {
-      const monthlyPriceKrw = Math.round(
-        duration.price_krw / duration.duration_months,
-      );
-
-      const orderPayload: OrderPayload = {
-        programId: program.id,
-        programName: localizeProgram(program, locale).title,
-        storeName: "AMOR LAB 랜딩",
-        buyerEmail: formData.get("buyerEmail") as string,
-        buyerGoal: formData.get("goal") as string,
-        paymentMethod: formData.get("paymentMethod") as string,
-        pricingPhase: duration.pricingPhase || "regular",
-        regularPriceKrw: duration.regularPriceKrw || duration.price_krw,
-        finalPriceKrw: duration.finalPriceKrw || duration.price_krw,
-        regularTotalPriceKrw:
-          duration.regular_total_price_krw || duration.price_krw,
-        monthlyPriceKrw,
-        durationMonths: duration.duration_months,
-        totalPriceKrw: duration.price_krw,
-        bankAccount,
-      };
-
-      const response = await fetch(
-        `${supabaseUrl}/functions/v1/create-guest-order`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            tenantId,
-            buyerName: formData.get("buyerName"),
-            buyerPhone: formData.get("buyerPhone"),
-            orderPayload,
-          }),
-        },
-      );
-
+      if (!phoneVerified)
+        throw new Error(
+          locale === "en"
+            ? "Verify your phone first."
+            : "휴대폰 인증을 완료해 주세요.",
+        );
+      requestId.current ??= crypto.randomUUID();
+      const response = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          requestId: requestId.current,
+          bankRevision: bankAccount.revision,
+          programId: program.id,
+          durationMonths: duration.duration_months,
+          buyerName: formData.get("buyerName"),
+          buyerEmail: formData.get("buyerEmail"),
+          buyerGoal: formData.get("goal"),
+          agreement: formData.has("agreement"),
+        }),
+      });
       const result = (await response.json().catch(() => ({}))) as OrderResponse;
       if (!response.ok || !result.ok) {
         throw new Error(result.error || result.message || t("createFailed"));
       }
 
-      alert(t("completedAlert", bankAccount));
-      window.location.href = `/${locale}`;
+      alert(t("completedAlert", result.bankAccount ?? bankAccount));
+      window.location.href = `/${locale}/lookup`;
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : t("unknownError");
@@ -224,7 +204,6 @@ export default function OrderPageClient() {
   };
 
   useEffect(() => {
-    assertPublicSupabaseEnv();
     const params = new URLSearchParams(window.location.search);
     const requestedId = params.get("program");
     const program =
@@ -253,7 +232,18 @@ export default function OrderPageClient() {
     };
   }, []);
 
-  if (!selectedProgram || !selectedDuration) {
+  if (bankError)
+    return (
+      <div className="mx-auto max-w-lg px-5 py-16">
+        <p role="alert" className="mb-4 text-destructive">
+          {bankError}
+        </p>
+        <Button onClick={() => window.location.reload()}>
+          {locale === "en" ? "Try again" : "다시 불러오기"}
+        </Button>
+      </div>
+    );
+  if (!selectedProgram || !selectedDuration || !bankAccount) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <LoaderCircle
@@ -449,25 +439,7 @@ export default function OrderPageClient() {
                     />
                   </div>
 
-                  <div className="flex flex-col">
-                    <Label
-                      htmlFor="buyerPhone"
-                      className="flex items-center py-2 pb-2"
-                    >
-                      <span className="text-sm font-semibold">
-                        {t("buyerPhone")}
-                      </span>
-                    </Label>
-                    <Input
-                      type="tel"
-                      id="buyerPhone"
-                      name="buyerPhone"
-                      className="w-full"
-                      placeholder="010-0000-0000"
-                      required
-                      autoComplete="tel"
-                    />
-                  </div>
+                  <PhoneVerification english={locale === "en"} />
 
                   <div className="flex flex-col">
                     <Label
@@ -519,42 +491,6 @@ export default function OrderPageClient() {
                   defaultValue="bank"
                   className="space-y-3"
                 >
-                  <Label
-                    htmlFor="payment-card"
-                    className="flex items-center gap-4 p-4 border border-muted rounded-xl bg-muted/20 hover:bg-muted/30 transition cursor-pointer"
-                  >
-                    <RadioGroupItem
-                      id="payment-card"
-                      value="card"
-                      disabled
-                      className="size-5"
-                    />
-                    <div>
-                      <div className="font-bold">{t("card")}</div>
-                      <div className="text-xs text-foreground/50">
-                        {t("cardComingSoon")}
-                      </div>
-                    </div>
-                  </Label>
-
-                  <Label
-                    htmlFor="payment-kakao"
-                    className="flex items-center gap-4 p-4 border border-muted rounded-xl bg-muted/20 hover:bg-muted/30 transition cursor-pointer"
-                  >
-                    <RadioGroupItem
-                      id="payment-kakao"
-                      value="kakao"
-                      disabled
-                      className="size-5"
-                    />
-                    <div>
-                      <div className="font-bold">{t("kakaoPay")}</div>
-                      <div className="text-xs text-foreground/50">
-                        {t("kakaoPayComingSoon")}
-                      </div>
-                    </div>
-                  </Label>
-
                   <Label
                     htmlFor="payment-bank"
                     className="flex items-center gap-4 p-4 border-2 border-primary/30 rounded-xl bg-primary/5 hover:bg-primary/10 transition cursor-pointer"
@@ -662,7 +598,7 @@ export default function OrderPageClient() {
                   size="default"
                   type="submit"
                   className="w-full rounded-full font-bold mt-2"
-                  disabled={isLoading}
+                  disabled={isLoading || !phoneVerified}
                 >
                   {isLoading ? (
                     <>
@@ -672,8 +608,12 @@ export default function OrderPageClient() {
                       />
                       {t("processing")}
                     </>
-                  ) : (
+                  ) : phoneVerified ? (
                     t("submit")
+                  ) : locale === "en" ? (
+                    "Verify your phone to order"
+                  ) : (
+                    "휴대폰 인증 후 주문하기"
                   )}
                 </Button>
               </CardContent>
