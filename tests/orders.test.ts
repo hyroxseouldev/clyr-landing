@@ -138,6 +138,7 @@ describe("payment confirmation and outbox (isolated PostgreSQL; no SMS)", () => 
     assert.equal((await db.select().from(orderGrants)).length, 1);
     assert.equal((await db.select().from(orderEvents)).length, 1);
     await db.update(messageTemplates).set({ body: "Changed" });
+    await db.update(orderGrants).set({ status: "waiting" });
     let sends = 0;
     const transport = async (job: { body: string }) => {
       sends++;
@@ -167,13 +168,11 @@ describe("payment confirmation and outbox (isolated PostgreSQL; no SMS)", () => 
     assert.equal(status, "waiting");
     assert.equal(remote.size, 1);
     assert.equal(calls, 2);
-    await db
-      .update(orderGrants)
-      .set({
-        status: "sending",
-        lease: "old",
-        updated_at: new Date(Date.now() - 240000),
-      });
+    await db.update(orderGrants).set({
+      status: "sending",
+      lease: "old",
+      updated_at: new Date(Date.now() - 240000),
+    });
     assert.equal(
       await deliverGrantWith(db, input.requestId, async () => ({
         status: "claimed",
@@ -202,6 +201,7 @@ describe("payment confirmation and outbox (isolated PostgreSQL; no SMS)", () => 
   it("retains confirmed payment on rejection and permits explicit retry", async () => {
     await template();
     await changeOrderStatus(db, input.requestId, "master", "confirmed");
+    await db.update(orderGrants).set({ status: "waiting" });
     assert.equal(
       await deliverPaymentMessageWith(db, input.requestId, async () => ({
         accepted: false,
@@ -217,6 +217,7 @@ describe("payment confirmation and outbox (isolated PostgreSQL; no SMS)", () => 
   it("does not retry ambiguous sends, and cancellation never enqueues SMS", async () => {
     await template();
     await changeOrderStatus(db, input.requestId, "master", "confirmed");
+    await db.update(orderGrants).set({ status: "waiting" });
     assert.equal(
       await deliverPaymentMessageWith(db, input.requestId, async () => {
         throw new Error("timeout");

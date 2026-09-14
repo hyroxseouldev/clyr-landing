@@ -78,6 +78,8 @@ export default function LookUpPage() {
         label: t("confirmed"),
         className: "bg-success text-background",
       },
+      reversing: { label: t("reversing"), className: "bg-muted text-foreground" },
+      refunded: { label: t("refunded"), className: "bg-muted text-foreground" },
       canceled: { label: t("canceled"), className: "bg-error text-background" },
     })[status || ""] || {
       label: status || t("checkingStatus"),

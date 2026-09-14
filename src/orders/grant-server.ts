@@ -17,7 +17,7 @@ export async function fulfillOrder(orderId: string) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          p_order_id: job.order_id,
+          p_order_id: job.issuance_id ?? job.order_id,
           p_program_id: job.program_id,
           p_phone: job.phone,
           p_duration_months: job.duration_months,
@@ -29,7 +29,7 @@ export async function fulfillOrder(orderId: string) {
     if (!response.ok) throw new Error("Mobile grant request failed");
     const data = await response.json();
     if (
-      data.orderId !== job.order_id ||
+      data.orderId !== (job.issuance_id ?? job.order_id) ||
       !["waiting", "claimed"].includes(data.status)
     )
       throw new Error("Invalid grant response");

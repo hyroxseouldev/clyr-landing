@@ -106,7 +106,7 @@ export const orders = pgTable(
     buyer_phone: text("buyer_phone").notNull(),
     buyer_phone_normalized: text("buyer_phone_normalized").notNull(),
     status: text("status")
-      .$type<"pending" | "confirmed" | "canceled">()
+      .$type<"pending" | "confirmed" | "canceled" | "reversing" | "refunded">()
       .default("pending")
       .notNull(),
     order_payload: jsonb("order_payload")
@@ -136,6 +136,7 @@ export const orderEvents = pgTable("order_events", {
     .notNull()
     .references(() => user.id),
   status: text("status").notNull(),
+  reason: text("reason"),
   created_at: timestamp("created_at", { withTimezone: true })
     .defaultNow()
     .notNull(),
@@ -189,11 +190,14 @@ export const orderGrants = pgTable("order_grants", {
   order_id: text("order_id")
     .primaryKey()
     .references(() => orders.id),
+  issuance_id: text("issuance_id"),
   program_id: text("program_id").notNull(),
   phone: text("phone").notNull(),
   duration_months: integer("duration_months").notNull(),
   status: text("status")
-    .$type<"pending" | "sending" | "waiting" | "claimed" | "failed">()
+    .$type<
+      "pending" | "sending" | "waiting" | "claimed" | "failed" | "revoked"
+    >()
     .notNull()
     .default("pending"),
   attempts: integer("attempts").notNull().default(0),
@@ -237,3 +241,34 @@ export const adminOrderMessages = pgTable("admin_order_messages", {
     .notNull()
     .defaultNow(),
 });
+
+export const orderReversals = pgTable(
+  "order_reversals",
+  {
+    id: text("id").primaryKey(),
+    order_id: text("order_id")
+      .notNull()
+      .references(() => orders.id),
+    issuance_id: text("issuance_id"),
+    kind: text("kind").$type<"undo" | "refund">().notNull(),
+    reason: text("reason").notNull(),
+    actor_id: text("actor_id")
+      .notNull()
+      .references(() => user.id),
+    status: text("status")
+      .$type<"pending" | "sending" | "failed" | "done">()
+      .notNull()
+      .default("pending"),
+    lease: text("lease"),
+    manual_access_reviewed: boolean("manual_access_reviewed")
+      .notNull()
+      .default(false),
+    created_at: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    updated_at: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (t) => [index("order_reversals_order_idx").on(t.order_id)],
+);

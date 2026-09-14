@@ -90,6 +90,8 @@
     "orderedAt": "주문 일시",
     "pending": "입금 확인 대기",
     "confirmed": "확인 완료",
+    "reversing": "취소·환불 처리 중",
+    "refunded": "환불 완료",
     "canceled": "취소됨",
     "checkingStatus": "상태 확인 중"
   },

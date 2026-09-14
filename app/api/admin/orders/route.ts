@@ -1,7 +1,9 @@
-import { and, count, desc, eq, ilike, or } from "drizzle-orm";
+import { and, count, desc, eq, ilike, or, inArray } from "drizzle-orm";
 import { getDb } from "@/db";
 import {
   orders,
+  orderEvents,
+  orderReversals,
   orderMessages,
   orderGrants,
   adminOrderMessages,
@@ -22,7 +24,11 @@ export async function GET(request: Request) {
       .slice(0, 80)
       .replace(/[%_\\]/g, "\\$&");
     const where = and(
-      status === "pending" || status === "confirmed" || status === "canceled"
+      status === "pending" ||
+        status === "confirmed" ||
+        status === "canceled" ||
+        status === "reversing" ||
+        status === "refunded"
         ? eq(orders.status, status)
         : undefined,
       search
@@ -67,11 +73,46 @@ export async function GET(request: Request) {
         .offset((page - 1) * 25),
       db.select({ total: count() }).from(orders).where(where),
     ]);
+    const ids = rows.map((row) => row.order.id);
+    const [events, reversals] = ids.length
+      ? await Promise.all([
+          db
+            .select()
+            .from(orderEvents)
+            .where(inArray(orderEvents.order_id, ids))
+            .orderBy(desc(orderEvents.created_at)),
+          db
+            .select()
+            .from(orderReversals)
+            .where(inArray(orderReversals.order_id, ids))
+            .orderBy(desc(orderReversals.created_at)),
+        ])
+      : [[], []];
     return Response.json(
       {
         ok: true,
         orders: rows.map((row) => ({
           ...row.order,
+          events: events.filter((event) => event.order_id === row.order.id),
+          reversals: reversals
+            .filter((job) => job.order_id === row.order.id)
+            .map(
+              ({
+                id,
+                kind,
+                reason,
+                status,
+                created_at,
+                manual_access_reviewed,
+              }) => ({
+                id,
+                kind,
+                reason,
+                status,
+                created_at,
+                manual_access_reviewed,
+              }),
+            ),
           message: row.message,
           grant: row.grant,
           alert: row.alert,

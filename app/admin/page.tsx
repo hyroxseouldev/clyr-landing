@@ -1,4 +1,5 @@
 "use client";
+import { OrderReversal } from "./order-reversal";
 import { OrderAlertEditor } from "./order-alert-editor";
 import { useCallback, useEffect, useState } from "react";
 import { Dialog } from "radix-ui";
@@ -30,6 +31,7 @@ const grantLabels = {
   waiting: "앱 가입·인증 대기",
   claimed: "앱 이용권 지급 완료",
   failed: "발급 실패 · 재시도 필요",
+  revoked: "회수 요청됨 · 주문 처리 상태 확인",
 };
 const messageLabels = {
   pending: "발송 대기",
@@ -42,6 +44,8 @@ const labels = {
   pending: "입금 대기",
   confirmed: "입금 확인",
   canceled: "주문 취소",
+  reversing: "취소·환불 처리 중",
+  refunded: "환불 완료",
 };
 const money = (value = 0) =>
   new Intl.NumberFormat("ko-KR").format(value) + "원";
@@ -471,7 +475,7 @@ export default function MasterPage() {
                         </dl>
                       </details>
                     </div>
-                    {order.grant?.status && (
+                    {order.status === "confirmed" && order.grant?.status && (
                       <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border p-3 text-xs">
                         <div>
                           <p>
@@ -569,42 +573,43 @@ export default function MasterPage() {
                         <span>
                           입금 안내 문자 · {messageLabels[order.message.status]}
                         </span>
-                        {["failed", "pending"].includes(
-                          order.message.status,
-                        ) && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            disabled={busy}
-                            onClick={async () => {
-                              setBusy(true);
-                              setError("");
-                              try {
-                                const response = await fetch(
-                                  `/api/admin/orders/${order.id}/message`,
-                                  { method: "POST" },
-                                );
-                                const result = await response.json();
-                                if (!response.ok)
-                                  throw new Error(result.message);
-                                setNotice(
-                                  `문자: ${messageLabels[result.messageStatus as keyof typeof messageLabels]}`,
-                                );
-                                await load();
-                              } catch (e) {
-                                setError(
-                                  e instanceof Error
-                                    ? e.message
-                                    : "재발송에 실패했습니다.",
-                                );
-                              } finally {
-                                setBusy(false);
-                              }
-                            }}
-                          >
-                            문자 재발송
-                          </Button>
-                        )}
+                        {order.status === "confirmed" &&
+                          ["failed", "pending"].includes(
+                            order.message.status,
+                          ) && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              disabled={busy}
+                              onClick={async () => {
+                                setBusy(true);
+                                setError("");
+                                try {
+                                  const response = await fetch(
+                                    `/api/admin/orders/${order.id}/message`,
+                                    { method: "POST" },
+                                  );
+                                  const result = await response.json();
+                                  if (!response.ok)
+                                    throw new Error(result.message);
+                                  setNotice(
+                                    `문자: ${messageLabels[result.messageStatus as keyof typeof messageLabels]}`,
+                                  );
+                                  await load();
+                                } catch (e) {
+                                  setError(
+                                    e instanceof Error
+                                      ? e.message
+                                      : "재발송에 실패했습니다.",
+                                  );
+                                } finally {
+                                  setBusy(false);
+                                }
+                              }}
+                            >
+                              문자 재발송
+                            </Button>
+                          )}
                       </div>
                     )}
                     {order.status === "pending" && (
@@ -632,6 +637,7 @@ export default function MasterPage() {
                         </Button>
                       </div>
                     )}
+                    <OrderReversal order={order} onChanged={() => load()} />
                   </article>
                 ))
               )}

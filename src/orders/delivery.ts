@@ -1,6 +1,11 @@
 import { and, eq, inArray, sql } from "drizzle-orm";
 import type { getDb } from "../db";
-import { orderMessages, adminOrderMessages } from "../db/schema";
+import {
+  orderMessages,
+  adminOrderMessages,
+  orders,
+  orderGrants,
+} from "../db/schema";
 export type PaymentTransport = (job: {
   id: string;
   recipient: string;
@@ -21,20 +26,36 @@ export async function deliverOrderMessageWith(
   orderId: string,
   transport: PaymentTransport,
 ) {
-  const [job] = await db
-    .update(table)
-    .set({
-      status: "sending",
-      attempts: sql`${table.attempts} + 1`,
-      updated_at: new Date(),
-    })
-    .where(
-      and(
-        eq(table.order_id, orderId),
-        inArray(table.status, ["pending", "failed"]),
-      ),
-    )
-    .returning();
+  const job = await db.transaction(async (tx) => {
+    if (table === orderMessages) {
+      const [order] = await tx
+        .select()
+        .from(orders)
+        .where(eq(orders.id, orderId))
+        .for("update");
+      if (order?.status !== "confirmed") return;
+      const [grant] = await tx
+        .select()
+        .from(orderGrants)
+        .where(eq(orderGrants.order_id, orderId));
+      if (grant && !["waiting", "claimed"].includes(grant.status)) return;
+    }
+    const [claimed] = await tx
+      .update(table)
+      .set({
+        status: "sending",
+        attempts: sql`${table.attempts} + 1`,
+        updated_at: new Date(),
+      })
+      .where(
+        and(
+          eq(table.order_id, orderId),
+          inArray(table.status, ["pending", "failed"]),
+        ),
+      )
+      .returning();
+    return claimed;
+  });
   if (!job) return;
   let outcome: "accepted" | "failed" | "unknown" = "unknown";
   let providerId: string | null = null;

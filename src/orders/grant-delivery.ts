@@ -1,6 +1,6 @@
 import { and, eq, inArray, lt, or, sql } from "drizzle-orm";
 import type { getDb } from "../db";
-import { orderGrants } from "../db/schema";
+import { orderGrants, orders } from "../db/schema";
 export type GrantJob = typeof orderGrants.$inferSelect;
 export type GrantResult = {
   status: "waiting" | "claimed";
@@ -13,27 +13,36 @@ export async function deliverGrantWith(
   transport: (job: GrantJob) => Promise<GrantResult>,
 ) {
   const lease = crypto.randomUUID();
-  const [job] = await db
-    .update(orderGrants)
-    .set({
-      status: "sending",
-      lease,
-      attempts: sql`${orderGrants.attempts}+1`,
-      updated_at: new Date(),
-    })
-    .where(
-      and(
-        eq(orderGrants.order_id, orderId),
-        or(
-          inArray(orderGrants.status, ["pending", "failed", "waiting"]),
-          and(
-            eq(orderGrants.status, "sending"),
-            lt(orderGrants.updated_at, new Date(Date.now() - 180000)),
+  const job = await db.transaction(async (tx) => {
+    const [order] = await tx
+      .select()
+      .from(orders)
+      .where(eq(orders.id, orderId))
+      .for("update");
+    if (order?.status !== "confirmed") return;
+    const [claimed] = await tx
+      .update(orderGrants)
+      .set({
+        status: "sending",
+        lease,
+        attempts: sql`${orderGrants.attempts}+1`,
+        updated_at: new Date(),
+      })
+      .where(
+        and(
+          eq(orderGrants.order_id, orderId),
+          or(
+            inArray(orderGrants.status, ["pending", "failed", "waiting"]),
+            and(
+              eq(orderGrants.status, "sending"),
+              lt(orderGrants.updated_at, new Date(Date.now() - 180000)),
+            ),
           ),
         ),
-      ),
-    )
-    .returning();
+      )
+      .returning();
+    return claimed;
+  });
   if (!job)
     return (
       await db
@@ -64,5 +73,15 @@ export async function deliverGrantWith(
     .where(
       and(eq(orderGrants.order_id, orderId), eq(orderGrants.lease, lease)),
     );
-  return status;
+  return (
+    await db
+      .select()
+      .from(orderGrants)
+      .where(
+        and(
+          eq(orderGrants.order_id, orderId),
+          sql`coalesce(${orderGrants.issuance_id}, ${orderGrants.order_id}) = ${job.issuance_id ?? job.order_id}`,
+        ),
+      )
+  )[0]?.status;
 }

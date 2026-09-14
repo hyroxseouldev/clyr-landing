@@ -52,14 +52,16 @@ export async function changeOrderStatus(
           400,
           "프로그램과 이용 기간을 확인할 수 없는 주문입니다.",
         );
-      await tx
-        .insert(orderGrants)
-        .values({
-          order_id: id,
-          program_id: programId,
-          phone: recipient,
-          duration_months: months!,
-        });
+      // A restored pending order starts a new issuance; old reversals retain its ID.
+      await tx.delete(orderGrants).where(eq(orderGrants.order_id, id));
+      await tx.delete(orderMessages).where(eq(orderMessages.order_id, id));
+      await tx.insert(orderGrants).values({
+        order_id: id,
+        issuance_id: crypto.randomUUID(),
+        program_id: programId,
+        phone: recipient,
+        duration_months: months!,
+      });
       await tx.insert(orderMessages).values({
         id: crypto.randomUUID(),
         order_id: id,

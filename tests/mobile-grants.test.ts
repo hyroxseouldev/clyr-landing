@@ -153,3 +153,159 @@ it("anonymous and authenticated callers cannot issue grants or access the privat
     await pg.exec("reset role");
   }
 });
+async function revoke(id = order) {
+  return (
+    await pg.query<{ result: { status: string; removedSeconds: number } }>(
+      "select public.revoke_amor_landing_grant($1,$2,$3,$4) result",
+      [id, program, "01012345678", 1],
+    )
+  ).rows[0].result;
+}
+it("revocation before delivery fences late grants and signup, and retries are idempotent", async () => {
+  assert.equal((await revoke()).status, "revoked");
+  assert.equal((await ingest()).status, "revoked");
+  await member(true);
+  assert.equal(
+    (await pg.query("select * from program_entitlements")).rows.length,
+    0,
+  );
+  assert.equal((await revoke()).removedSeconds, 0);
+});
+it("revokes an unclaimed queue entry so later signup cannot activate it", async () => {
+  await ingest();
+  await revoke();
+  await member(true);
+  assert.equal(
+    (await pg.query("select * from program_entitlements")).rows.length,
+    0,
+  );
+});
+it("revokes only unused time and shifts later purchases without erasing them", async () => {
+  await member(true);
+  await ingest();
+  const next = "20000000-0000-4000-8000-000000000002";
+  await ingest(next);
+  const original = (
+    await pg.query<{ starts_at: Date; ends_at: Date }>(
+      "select starts_at,ends_at from amor_landing_grants where order_id=$1",
+      [next],
+    )
+  ).rows[0];
+  const duration = Number(original.ends_at) - Number(original.starts_at);
+  const result = await revoke();
+  assert.ok(result.removedSeconds > 0);
+  const ent = (
+    await pg.query<{ is_active: boolean; ends_at: Date }>(
+      "select * from program_entitlements",
+    )
+  ).rows[0];
+  assert.equal(ent.is_active, true);
+  const moved = (
+    await pg.query<{ starts_at: Date; ends_at: Date }>(
+      "select * from amor_landing_grants where order_id=$1",
+      [next],
+    )
+  ).rows[0];
+  assert.equal(Number(moved.ends_at) - Number(moved.starts_at), duration);
+  assert.equal(Number(moved.ends_at), Number(ent.ends_at));
+  const once = Number(ent.ends_at);
+  await revoke();
+  assert.equal(
+    Number(
+      (
+        await pg.query<{ ends_at: Date }>(
+          "select ends_at from program_entitlements",
+        )
+      ).rows[0].ends_at,
+    ),
+    once,
+  );
+  await revoke(next);
+  assert.equal(
+    (
+      await pg.query<{ is_active: boolean }>(
+        "select is_active from program_entitlements",
+      )
+    ).rows[0].is_active,
+    false,
+  );
+});
+it("preserves pre-existing and infinite access when reversing an appended purchase", async () => {
+  await member(true);
+  await pg.query(
+    "insert into program_entitlements(tenant_id,user_id,program_id,source_granted_by,starts_at,ends_at,is_active) values($1,$2,$3,$2,now(),now()+interval '10 days',true)",
+    [tenant, uid, program],
+  );
+  const baseline = Number(
+    (
+      await pg.query<{ ends_at: Date }>(
+        "select ends_at from program_entitlements",
+      )
+    ).rows[0].ends_at,
+  );
+  await ingest();
+  await revoke();
+  assert.equal(
+    Number(
+      (
+        await pg.query<{ ends_at: Date }>(
+          "select ends_at from program_entitlements",
+        )
+      ).rows[0].ends_at,
+    ),
+    baseline,
+  );
+  await pg.exec("update program_entitlements set ends_at=null");
+  const next = "20000000-0000-4000-8000-000000000002";
+  await ingest(next);
+  await revoke(next);
+  const ent = (
+    await pg.query<{ ends_at: Date | null; is_active: boolean }>(
+      "select * from program_entitlements",
+    )
+  ).rows[0];
+  assert.equal(ent.ends_at, null);
+  assert.equal(ent.is_active, true);
+});
+it("fully consumed grants do not consume another purchase's remaining time", async () => {
+  await member(true);
+  await ingest();
+  await pg.query(
+    "update amor_landing_grants set starts_at=now()-interval '40 days',ends_at=now()-interval '10 days' where order_id=$1",
+    [order],
+  );
+  await pg.exec(
+    "update program_entitlements set ends_at=now()-interval '10 days'",
+  );
+  await ingest("20000000-0000-4000-8000-000000000002");
+  const before = Number(
+    (
+      await pg.query<{ ends_at: Date }>(
+        "select ends_at from program_entitlements",
+      )
+    ).rows[0].ends_at,
+  );
+  assert.equal((await revoke()).removedSeconds, 0);
+  assert.equal(
+    Number(
+      (
+        await pg.query<{ ends_at: Date }>(
+          "select ends_at from program_entitlements",
+        )
+      ).rows[0].ends_at,
+    ),
+    before,
+  );
+});
+it("rejects public callers and mismatched reversal payloads", async () => {
+  await ingest(order, 2);
+  await assert.rejects(revoke(), /landing_order_conflict/);
+  for (const role of ["anon", "authenticated"]) {
+    await pg.exec(`set role ${role}`);
+    try {
+      await assert.rejects(revoke(), /permission denied/);
+    } finally {
+      await pg.exec("reset role");
+    }
+  }
+});

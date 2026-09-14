@@ -90,6 +90,8 @@
     "orderedAt": "Ordered on",
     "pending": "Awaiting transfer confirmation",
     "confirmed": "Confirmed",
+    "reversing": "Reversal in progress",
+    "refunded": "Refunded",
     "canceled": "Canceled",
     "checkingStatus": "Checking status"
   },

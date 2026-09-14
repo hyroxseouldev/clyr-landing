@@ -105,12 +105,33 @@ export function buildOrder(
   };
 }
 export type OrderRow = {
+  reversals?: {
+    id: string;
+    kind: "undo" | "refund";
+    reason: string;
+    status: "pending" | "sending" | "failed" | "done";
+    created_at: string;
+    manual_access_reviewed: boolean;
+  }[];
+  events?: {
+    id: string;
+    status: string;
+    reason: string | null;
+    created_at: string;
+    actor_id: string;
+  }[];
   alert?: {
     status: "pending" | "sending" | "accepted" | "failed" | "unknown";
     recipient: string;
   } | null;
   grant?: {
-    status: "pending" | "sending" | "waiting" | "claimed" | "failed";
+    status:
+      | "pending"
+      | "sending"
+      | "waiting"
+      | "claimed"
+      | "failed"
+      | "revoked";
     startsAt?: string | null;
     endsAt?: string | null;
   } | null;
@@ -121,7 +142,7 @@ export type OrderRow = {
   id: string;
   buyer_name: string;
   buyer_phone: string;
-  status: "pending" | "confirmed" | "canceled";
+  status: "pending" | "confirmed" | "canceled" | "reversing" | "refunded";
   created_at: string;
   confirmed_at: string | null;
   canceled_at: string | null;

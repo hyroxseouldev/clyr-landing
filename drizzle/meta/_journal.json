@@ -43,6 +43,13 @@
       "when": 1789314445496,
       "tag": "0005_dark_ezekiel",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1789353085071,
+      "tag": "0006_stale_moira_mactaggert",
+      "breakpoints": true
     }
   ]
 }
